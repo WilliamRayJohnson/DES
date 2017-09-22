@@ -25,9 +25,19 @@ public class DESTest
     
 
     @Test
-    public void testPassThroughIPTable()
+    public void testPassThroughIPTableDESExample()
     {   
-        fail("Not yet implemented");
+        byte[] plainText = {(byte) 239, (byte) 205, (byte) 171, (byte) 137, 103, 69, 35, 1};
+        byte[] expectedOutput = {(byte) 170, (byte) 240, (byte) 170, (byte) 240, (byte) 255, (byte) 204, 0, (byte) 204};
+        byte[] actaulOutput = cipher.passThroughIPTable(plainText);
+        assertEquals(expectedOutput[0], actaulOutput[0]);
+        assertEquals(expectedOutput[1], actaulOutput[1]);
+        assertEquals(expectedOutput[2], actaulOutput[2]);
+        assertEquals(expectedOutput[3], actaulOutput[3]);
+        assertEquals(expectedOutput[4], actaulOutput[4]);
+        assertEquals(expectedOutput[5], actaulOutput[5]);
+        assertEquals(expectedOutput[6], actaulOutput[6]);
+        assertEquals(expectedOutput[7], actaulOutput[7]);
     }
 
 }

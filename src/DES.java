@@ -6,8 +6,27 @@ public class DES
         
     }
     
-    public byte[] passThroughIPTable()
+    public byte[] passThroughIPTable(byte[] plainText)
     {
-        return null;
+        int shiftAmount;
+        byte mask;
+        byte maskedByte;
+        byte[] IPPassed = {0, 0, 0, 0, 0, 0, 0, 0};
+        int[] byteOrder = {4, 0, 5, 1, 6, 2, 7, 3};
+        
+        for(int bite = 0; bite <= 7; bite++)
+        {
+            shiftAmount = 7 - bite;
+            mask = 1;
+            for(int bit = 0; bit <= 7; bit++)
+            {
+                maskedByte = (byte) (plainText[bite] & mask);
+                maskedByte = (byte) (maskedByte << shiftAmount);
+                IPPassed[byteOrder[bit]] = (byte) (IPPassed[byteOrder[bit]] | maskedByte);
+                shiftAmount--;
+                mask = (byte) (mask << 1);
+            }
+        }
+        return IPPassed;
     }
 }
