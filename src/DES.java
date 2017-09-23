@@ -21,7 +21,10 @@ public class DES
             for(int bit = 0; bit <= 7; bit++)
             {
                 maskedByte = (byte) (plainText[bite] & mask);
-                maskedByte = (byte) (maskedByte << shiftAmount);
+                if(shiftAmount >= 0)
+                    maskedByte = (byte) (maskedByte << shiftAmount);
+                else if(shiftAmount < 0)
+                    maskedByte = (byte) (maskedByte >> Math.abs(shiftAmount));
                 IPPassed[byteOrder[bit]] = (byte) (IPPassed[byteOrder[bit]] | maskedByte);
                 shiftAmount--;
                 mask = (byte) (mask << 1);
