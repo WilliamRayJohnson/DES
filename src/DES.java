@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public class DES
 {
@@ -6,12 +7,12 @@ public class DES
         
     }
     
-    public byte[] passThroughIPTable(byte[] plainText)
+    public int[] passThroughIPTable(int[] plainText)
     {
         int shiftAmount;
-        byte mask;
-        byte maskedByte;
-        byte[] IPPassed = {0, 0, 0, 0, 0, 0, 0, 0};
+        int mask;
+        int maskedByte;
+        int[] IPPassed = {0, 0, 0, 0, 0, 0, 0, 0};
         int[] byteOrder = {4, 0, 5, 1, 6, 2, 7, 3};
         
         for(int bite = 0; bite <= 7; bite++)
@@ -20,16 +21,38 @@ public class DES
             mask = 1;
             for(int bit = 0; bit <= 7; bit++)
             {
-                maskedByte = (byte) (plainText[bite] & mask);
+                maskedByte = (plainText[bite] & mask);
                 if(shiftAmount >= 0)
-                    maskedByte = (byte) (maskedByte << shiftAmount);
+                    maskedByte = (maskedByte << shiftAmount);
                 else if(shiftAmount < 0)
-                    maskedByte = (byte) (maskedByte >> Math.abs(shiftAmount));
-                IPPassed[byteOrder[bit]] = (byte) (IPPassed[byteOrder[bit]] | maskedByte);
+                    maskedByte = (maskedByte >> Math.abs(shiftAmount));
+                IPPassed[byteOrder[bit]] = (IPPassed[byteOrder[bit]] | maskedByte);
                 shiftAmount--;
-                mask = (byte) (mask << 1);
+                mask = (mask << 1);
             }
         }
         return IPPassed;
+    }
+    
+    public int[] expandBytes(int[] rightBlock)
+    {
+        ArrayList<Byte> nibbles;
+        int[] expandedBytes = {0, 0, 0, 0, 0, 0};
+        
+        
+        return null;
+    }
+    
+    public ArrayList<Integer> getNibbles(int[] rightBlock)
+    {
+        ArrayList<Integer> nibbles = new ArrayList<Integer>();
+        
+        for(int nibble = 0; nibble <= 3; nibble++)
+        {
+            nibbles.add(((rightBlock[nibble] & 15) << 1));
+            nibbles.add(((rightBlock[nibble] & 240) >> 3));
+        }
+        
+        return nibbles;
     }
 }
