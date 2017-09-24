@@ -7,6 +7,11 @@ public class DES
         
     }
     
+    /**
+     * Pass 64-bit plain text through the initial permutation table
+     * @param plainText An array of 8 integers representing the plain text
+     * @return The result of IP table as an array of 8 integers
+     */
     public int[] passThroughIPTable(int[] plainText)
     {
         int shiftAmount;
@@ -34,6 +39,11 @@ public class DES
         return IPPassed;
     }
     
+    /**
+     * Expand a 32 bit number to a 48 bit number
+     * @param rightBlock An array of 4 integers representing the 32 bit right block
+     * @return the expanded integer array of 6 integers
+     */
     public int[] expandBytes(int[] rightBlock)
     {
         ArrayList<Integer> nibbles;
@@ -60,6 +70,11 @@ public class DES
         return expandedBytes;
     }
     
+    /**
+     * Splits up an array of bytes into their upper and lower nibbles
+     * @param rightBlock An array of 4 integers representing the 32 bit right block
+     * @return An array of 8 integers representing the upper and lower nibbles of the input
+     */
     public ArrayList<Integer> getNibbles(int[] rightBlock)
     {
         ArrayList<Integer> nibbles = new ArrayList<Integer>();
@@ -73,6 +88,11 @@ public class DES
         return nibbles;
     }
     
+    /**
+     * Assign the values of the first and last bit of each 6 bit block of the expansion table
+     * @param nibbles An array of 8 integers
+     * @return 
+     */
     public ArrayList<Integer> assignFirstLastBitsForBlocks(ArrayList<Integer> nibbles)
     {
         int lastBitMask = 2;
@@ -89,5 +109,22 @@ public class DES
             nibbles.set((nibble + 1) % 8, nextNibble | ((currentNibble & firstBitMask) >> 4));
         }
         return nibbles;
+    }
+    
+    /**
+     * Performs the xor operation on an array of integers of n length.
+     * Each operand must be of the same length
+     * @param leftOperand
+     * @param rightOperand
+     * @return An array of xored integers
+     */
+    public int[] xor(int[] leftOperand, int[] rightOperand)
+    {
+    	int[] xoredValue = new int[leftOperand.length];
+    	for(int aByte = 0; aByte < leftOperand.length; aByte++)
+    	{
+    		xoredValue[aByte] = leftOperand[aByte] ^ rightOperand[aByte]; 
+    	}
+    	return xoredValue;
     }
 }

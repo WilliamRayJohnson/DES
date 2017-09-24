@@ -89,4 +89,19 @@ public class DESTest
         assertEquals(expectedOutput.get(6), actualOutput.get(6));
         assertEquals(expectedOutput.get(7), actualOutput.get(7));
     }
+    
+    @Test
+    public void testXor()
+    {
+    	int[] expandedBytes = {85, 21, 122, 85, 21, 122};
+    	int[] key = {114, 112, 252, 239, 2, 27};
+    	int[] expectedOutput = {39, 101, 134, 186, 23, 97};
+    	int[] actualOutput = cipher.xor(expandedBytes, key);
+    	assertEquals(expectedOutput[0], actualOutput[0]);
+    	assertEquals(expectedOutput[1], actualOutput[1]);
+    	assertEquals(expectedOutput[2], actualOutput[2]);
+    	assertEquals(expectedOutput[3], actualOutput[3]);
+    	assertEquals(expectedOutput[4], actualOutput[4]);
+    	assertEquals(expectedOutput[5], actualOutput[5]);
+    }
 }
