@@ -36,11 +36,28 @@ public class DES
     
     public int[] expandBytes(int[] rightBlock)
     {
-        ArrayList<Byte> nibbles;
+        ArrayList<Integer> nibbles;
+        ArrayList<Integer> blocks;
         int[] expandedBytes = {0, 0, 0, 0, 0, 0};
+        int expandedLowerBytes = 0;
+        int expandedUpperBytes = 0;
+
+        nibbles = getNibbles(rightBlock);
+        blocks = assignFirstLastBitsForBlocks(nibbles);
         
+        for(int block = 0; block <= 3; block++)
+        {
+            expandedLowerBytes = expandedLowerBytes | blocks.get(block) << (6 * block);
+            expandedUpperBytes = expandedUpperBytes | blocks.get(block + 4) << (6 * block);
+        }
+        for(int aByte = 0; aByte <= 2; aByte++)
+        {
+            expandedBytes[aByte] = (expandedBytes[aByte] | (expandedLowerBytes & (255 << (aByte * 8)))) >> (aByte * 8);
+            expandedBytes[aByte + 3] = (expandedBytes[aByte + 3] | (expandedUpperBytes & (255 << (aByte * 8)))) >> (aByte * 8); 
+        }
+            
         
-        return null;
+        return expandedBytes;
     }
     
     public ArrayList<Integer> getNibbles(int[] rightBlock)
@@ -53,6 +70,24 @@ public class DES
             nibbles.add(((rightBlock[nibble] & 240) >> 3));
         }
         
+        return nibbles;
+    }
+    
+    public ArrayList<Integer> assignFirstLastBitsForBlocks(ArrayList<Integer> nibbles)
+    {
+        int lastBitMask = 2;
+        int firstBitMask = 16;
+        int currentNibble;
+        int nextNibble;
+        
+        for(int nibble = 0; nibble <= 7; nibble++)
+        {   
+            currentNibble = nibbles.get(nibble);
+            nextNibble = nibbles.get((nibble + 1) % 8);
+            
+            nibbles.set(nibble, currentNibble | ((nextNibble & lastBitMask) << 4));
+            nibbles.set((nibble + 1) % 8, nextNibble | ((currentNibble & firstBitMask) >> 4));
+        }
         return nibbles;
     }
 }

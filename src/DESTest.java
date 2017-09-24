@@ -73,5 +73,20 @@ public class DESTest
         assertEquals(expectedOutput.get(6), actualOutput.get(6));
         assertEquals(expectedOutput.get(7), actualOutput.get(7));
     }
-
+    
+    @Test
+    public void testAssignFirstLastBitsForBlocks()
+    {
+        ArrayList<Integer> nibbles = new ArrayList<>(Arrays.asList(20, 20, 0, 30, 20, 20, 0, 30));
+        ArrayList<Integer> expectedOutput = new ArrayList<>(Arrays.asList(21, 21, 33, 30, 21, 21, 33, 30));
+        ArrayList<Integer> actualOutput = cipher.assignFirstLastBitsForBlocks(nibbles);
+        assertEquals(expectedOutput.get(0), actualOutput.get(0));
+        assertEquals(expectedOutput.get(1), actualOutput.get(1));
+        assertEquals(expectedOutput.get(2), actualOutput.get(2));
+        assertEquals(expectedOutput.get(3), actualOutput.get(3));
+        assertEquals(expectedOutput.get(4), actualOutput.get(4));
+        assertEquals(expectedOutput.get(5), actualOutput.get(5));
+        assertEquals(expectedOutput.get(6), actualOutput.get(6));
+        assertEquals(expectedOutput.get(7), actualOutput.get(7));
+    }
 }
