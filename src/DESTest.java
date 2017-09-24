@@ -20,7 +20,7 @@ public class DESTest
     @Before
     public void setup() throws IOException
     {
-        this.cipher = new DES();
+        this.cipher = new DES("");
         this.plainText = "GreatDES";
         this.converter = new ByteArrayOutputStream();
         this.converter.write(plainText.getBytes());
@@ -103,5 +103,36 @@ public class DESTest
     	assertEquals(expectedOutput[3], actualOutput[3]);
     	assertEquals(expectedOutput[4], actualOutput[4]);
     	assertEquals(expectedOutput[5], actualOutput[5]);
+    }
+    
+    @Test
+    public void testSbox()
+    {
+        int[] xoredBytes = {39, 101, 134, 186, 23, 97};
+        String expectedOutput = "01011100100000101011010110010111";
+        String actualOutput = cipher.passThroughSBox(xoredBytes);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testPTable()
+    {
+        String pTableInput = "01011100100000101011010110010111";
+        String expectedOutput = "00100011010010101010100110111011";
+        String actualOutput = cipher.pTable(pTableInput);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testF()
+    {
+        int[] rightBlock = {170, 240, 170, 240};
+        int[] key = {114, 112, 252, 239, 2, 27};
+        int[] expectedOutput = {187, 169, 74, 35};
+        int[] actualOutput = cipher.f(rightBlock, key);
+        assertEquals(expectedOutput[0], actualOutput[0]);
+        assertEquals(expectedOutput[1], actualOutput[1]);
+        assertEquals(expectedOutput[2], actualOutput[2]);
+        assertEquals(expectedOutput[3], actualOutput[3]);
     }
 }
