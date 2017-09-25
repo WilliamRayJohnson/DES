@@ -27,6 +27,19 @@ public class DESTest
         this.plainTextBlock = this.converter.toByteArray();
     }
     
+    @Test 
+    public void testGenerateKeys()
+    {
+        cipher.setKey("0001001100110100010101110111100110011011101111001101111111110001");
+        int[][] expectedOutput = {{114, 112, 252, 239, 2, 27}};
+        int[][] actualOutput = cipher.generateKeys();
+        assertEquals(expectedOutput[0][0], actualOutput[0][0]);
+        assertEquals(expectedOutput[0][1], actualOutput[0][1]);
+        assertEquals(expectedOutput[0][2], actualOutput[0][2]);
+        assertEquals(expectedOutput[0][3], actualOutput[0][3]);
+        assertEquals(expectedOutput[0][4], actualOutput[0][4]);
+        assertEquals(expectedOutput[0][5], actualOutput[0][5]);
+    }
 
     @Test
     public void testPassThroughIPTableDESExample()
@@ -134,5 +147,14 @@ public class DESTest
         assertEquals(expectedOutput[1], actualOutput[1]);
         assertEquals(expectedOutput[2], actualOutput[2]);
         assertEquals(expectedOutput[3], actualOutput[3]);
+    }
+    
+    @Test
+    public void testInvIP()
+    {
+        String rightAndLeft = "0000101001001100110110011001010101000011010000100011001000110100";
+        String expectedOutput = "1000010111101000000100110101010000001111000010101011010000000101";
+        String actualOutput = cipher.InvIP(rightAndLeft);
+        assertEquals(expectedOutput, actualOutput);
     }
 }

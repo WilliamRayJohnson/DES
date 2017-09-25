@@ -52,7 +52,7 @@ public class DES
                     { 7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8 },
                     { 2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11 } } };
     
-    String key;
+    private String key;
     
     public DES(String keyFileName)
     {
@@ -60,6 +60,8 @@ public class DES
         {
             BufferedReader key = new BufferedReader(new FileReader(keyFileName));
             this.key = new BigInteger(key.readLine().getBytes()).toString(2);
+            while (this.key.length() < 64)
+                this.key = "0" + this.key;
             key.close();
         } catch (Throwable e)
         {
@@ -69,79 +71,109 @@ public class DES
     
     public void encrypt(String plainTextFileName)
     {
-        String binary = "";
-
-        // If leading 0 is cut off, add it back on
-        while (binary.length() < 64)
-            binary = "0" + binary;
-
+        int[][] keys = generateKeys();
+        
+        try
+        {
+            // get plain text
+            FileInputStream plainText = new FileInputStream(new File(plainTextFileName));
+            byte[] plainTextBytes = new byte[plainText.available()];
+            plainText.read(plainTextBytes);
+            
+            int[] currentBlock = new int[8];
+            for(int block = 0; block < plainTextBytes.length; block += 8)
+            {
+                for(int aByte = 0; aByte < 8; aByte++)
+                {
+                    currentBlock[aByte] = Byte.toUnsignedInt(plainTextBytes[block + aByte]);
+                }
+                
+                int[] passedIp = passThroughIPTable(currentBlock);
+                int[] leftHalf = Arrays.copyOfRange(passedIp, 4, 7);
+                int[] rightHalf = Arrays.copyOfRange(passedIp, 0, 3);
+                
+                for(int round = 0; round < 16; round++)
+                {
+                    int[] fOutput = f(rightHalf, keys[round]);
+                }
+                
+                
+            }
+        } catch (Throwable e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    public int[][] generateKeys()
+    {
         // PC-1
         int[][] tableL = new int[4][7];
         int[][] tableR = new int[4][7];
         int i = 0;
-        tableL[1][0] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][1] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][2] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][6] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][2] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][1] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][0] = Character.getNumericValue(binary.charAt(i++));
+        tableL[1][0] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][0] = Character.getNumericValue(this.key.charAt(i++));
         i++; // 8
-        tableL[0][6] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][0] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][1] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][5] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][1] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][0] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][6] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][0] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][0] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][6] = Character.getNumericValue(this.key.charAt(i++));
         i++;// 16
-        tableL[0][5] = Character.getNumericValue(binary.charAt(i++));
-        tableL[1][6] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][0] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][4] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][0] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][6] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][5] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[1][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][0] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][0] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][5] = Character.getNumericValue(this.key.charAt(i++));
         i++;// 24
-        tableL[0][4] = Character.getNumericValue(binary.charAt(i++));
-        tableL[1][5] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][6] = Character.getNumericValue(binary.charAt(i++));
-        tableR[3][3] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][6] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][5] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][4] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[1][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[3][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][4] = Character.getNumericValue(this.key.charAt(i++));
         i++;// 32
-        tableL[0][3] = Character.getNumericValue(binary.charAt(i++));
-        tableL[1][4] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][5] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][6] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][5] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][4] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][3] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[1][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][6] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][3] = Character.getNumericValue(this.key.charAt(i++));
         i++;// 40
-        tableL[0][2] = Character.getNumericValue(binary.charAt(i++));
-        tableL[1][3] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][4] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][5] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][4] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][3] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][2] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[1][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][5] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][2] = Character.getNumericValue(this.key.charAt(i++));
         i++;// 48
-        tableL[0][1] = Character.getNumericValue(binary.charAt(i++));
-        tableL[1][2] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][3] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][4] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][3] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][2] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][1] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[1][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][4] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][1] = Character.getNumericValue(this.key.charAt(i++));
         i++;// 56
-        tableL[0][0] = Character.getNumericValue(binary.charAt(i++));
-        tableL[1][1] = Character.getNumericValue(binary.charAt(i++));
-        tableL[2][2] = Character.getNumericValue(binary.charAt(i++));
-        tableL[3][3] = Character.getNumericValue(binary.charAt(i++));
-        tableR[2][2] = Character.getNumericValue(binary.charAt(i++));
-        tableR[1][1] = Character.getNumericValue(binary.charAt(i++));
-        tableR[0][0] = Character.getNumericValue(binary.charAt(i++));
+        tableL[0][0] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[1][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[2][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableL[3][3] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[2][2] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[1][1] = Character.getNumericValue(this.key.charAt(i++));
+        tableR[0][0] = Character.getNumericValue(this.key.charAt(i++));
 
         // Building Left and Right strings
         i = 0;
@@ -206,36 +238,7 @@ public class DES
             }
         }
         
-        try
-        {
-            // get plain text
-            FileInputStream plainText = new FileInputStream(new File(plainTextFileName));
-            byte[] plainTextBytes = new byte[plainText.available()];
-            plainText.read(plainTextBytes);
-            
-            int[] currentBlock = new int[8];
-            for(int block = 0; block < plainTextBytes.length; block += 8)
-            {
-                for(int aByte = 0; aByte < 8; aByte++)
-                {
-                    currentBlock[aByte] = Byte.toUnsignedInt(plainTextBytes[block + aByte]);
-                }
-                
-                int[] passedIp = passThroughIPTable(currentBlock);
-                int[] leftHalf = Arrays.copyOfRange(passedIp, 4, 7);
-                int[] rightHalf = Arrays.copyOfRange(passedIp, 0, 3);
-                
-                for(int round = 0; round < 16; round++)
-                {
-                    int[] fOutput = f(rightHalf, keys[round]);
-                }
-                
-                
-            }
-        } catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
+        return keys;
     }
     
     public int[] f(int[] rightHalf, int[] key)
@@ -247,7 +250,7 @@ public class DES
         int[] afterPTableInt = new int[4];
         for(int aByte = 0; aByte < 4; aByte++)
         {
-            afterPTableInt[aByte] = Integer.parseInt(afterPTable.substring(aByte * 8, aByte * 8 + 8), 2);
+            afterPTableInt[3 - aByte] = Integer.parseInt(afterPTable.substring(aByte * 8, aByte * 8 + 8), 2);
         }
         return afterPTableInt;
     }
@@ -371,7 +374,7 @@ public class DES
         return finalString;
     }
     
-    public static String InvIP(String binary)
+    public String InvIP(String binary)
     {
         int[] invIPTable = new int[]
         { 40, 8, 48, 16, 56, 24, 64, 32, 39, 7, 47, 15, 55, 23, 63, 31, 38, 6, 46, 14, 54, 22, 62, 30, 37, 5, 45, 13,
@@ -412,7 +415,7 @@ public class DES
             {
                 numAsByte = "0" + numAsByte;
             }
-            before = before + numAsByte;
+            before = numAsByte + before;
         }
         String after = "";
         for (int i = 0; i < 8; i++)
@@ -555,5 +558,10 @@ public class DES
     		xoredValue[aByte] = leftOperand[aByte] ^ rightOperand[aByte]; 
     	}
     	return xoredValue;
+    }
+    
+    public void setKey(String key)
+    {
+        this.key = key;
     }
 }
