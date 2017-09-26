@@ -31,7 +31,8 @@ public class DESTest
     public void testGenerateKeys()
     {
         cipher.setKey("0001001100110100010101110111100110011011101111001101111111110001");
-        int[][] expectedOutput = {{114, 112, 252, 239, 2, 27}};
+        int[][] expectedOutput = {{114, 112, 252, 239, 2, 27}, {229, 201, 219, 217, 174, 121},
+                                    {153, 207, 66, 138, 252, 85}, {29, 53, 219, 214, 173, 114}};
         int[][] actualOutput = cipher.generateKeys();
         assertEquals(expectedOutput[0][0], actualOutput[0][0]);
         assertEquals(expectedOutput[0][1], actualOutput[0][1]);

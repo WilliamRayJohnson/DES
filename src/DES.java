@@ -8,11 +8,8 @@ import java.math.BigInteger;
 
 public class DES
 {
-    // This is the array of s-boxes
-    private Integer[][][] s =
-    {
-            {
-                    { 14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7 },
+    private final Integer[][][] sBoxes =
+    {       {       { 14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7 },
                     { 1, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8 },
                     { 4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0 },
                     { 15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13 } },
@@ -79,6 +76,7 @@ public class DES
             FileInputStream plainText = new FileInputStream(new File(plainTextFileName));
             byte[] plainTextBytes = new byte[plainText.available()];
             plainText.read(plainTextBytes);
+            plainText.close();
             
             int[] currentBlock = new int[8];
             for(int block = 0; block < plainTextBytes.length; block += 8)
@@ -95,9 +93,7 @@ public class DES
                 for(int round = 0; round < 16; round++)
                 {
                     int[] fOutput = f(rightHalf, keys[round]);
-                }
-                
-                
+                }     
             }
         } catch (Throwable e)
         {
@@ -257,10 +253,8 @@ public class DES
 
     /**
      *
-     * @param shifts
-     *            (Number of bits to shift left)
-     * @param round
-     *            (Base round to shift)
+     * @param shifts (Number of bits to shift left)
+     * @param round (Base round to shift)
      * @return (Size 16 shifted string)
      */
     public static String leftShift(int shifts, String round)
@@ -331,8 +325,7 @@ public class DES
 
     /**
      *
-     * @param sBox
-     *            String of size 32
+     * @param sBox String of size 32
      * @return finalString String of size 32
      */
     public String pTable(String sBox)
@@ -393,15 +386,14 @@ public class DES
     
     private int convert(int box, int row, int col)
     {
-        return s[box][row][col];
+        return sBoxes[box][row][col];
     }
 
     /**
-     * This method converts the array of integers (which is the 48 bit sequence
-     * preceding the s-box into a String of 32 bits.
+     * This method converts the array of integers (which is the 48 bit sequence preceding the s-box into a String of 32
+     * bits.
      *
-     * @param arr
-     *            The array of integers from the previous XOR
+     * @param arr The array of integers from the previous XOR
      * @return String of 32 bits
      */
     public String passThroughSBox(int[] arr)
