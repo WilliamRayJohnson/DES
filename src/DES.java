@@ -49,9 +49,16 @@ public class DES
                     { 7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8 },
                     { 2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11 } } };
     
+    private int rounds;
     private String key;
     
-    public DES(String keyFileName)
+      
+    public DES(int rounds)
+    {
+        this.rounds = rounds;
+    }
+    
+    public DES(int rounds, String keyFileName)
     {
         try
         {
@@ -64,41 +71,66 @@ public class DES
         {
             e.printStackTrace();
         }
+        this.rounds = rounds;
     }
     
-    public void encrypt(String plainTextFileName)
+    /**
+     * Encrypts a single 64-bit block using DES
+     * @param currentBlock An array of integers representing the 8 bytes of plain text
+     */
+    public int[] encrypt(int[] currentBlock)
     {
         int[][] keys = generateKeys();
+        int[] cipherText = DESAlgorithm(keys, currentBlock);
         
-        try
+        return cipherText;  
+    }
+    
+    public int[] DESAlgorithm(int[][] keys, int[] currentBlock)
+    {
+        int[] fOutput;
+        int[] xoredLeftHalf;
+        int[] thirtyTwoBitSwapTemp;
+        
+        int[] passedIp = passThroughIPTable(currentBlock);
+        int[] leftHalf = Arrays.copyOfRange(passedIp, 4, 8);
+        int[] rightHalf = Arrays.copyOfRange(passedIp, 0, 4);
+
+        for (int round = 0; round < this.rounds; round++)
         {
-            // get plain text
-            FileInputStream plainText = new FileInputStream(new File(plainTextFileName));
-            byte[] plainTextBytes = new byte[plainText.available()];
-            plainText.read(plainTextBytes);
-            plainText.close();
-            
-            int[] currentBlock = new int[8];
-            for(int block = 0; block < plainTextBytes.length; block += 8)
-            {
-                for(int aByte = 0; aByte < 8; aByte++)
-                {
-                    currentBlock[aByte] = Byte.toUnsignedInt(plainTextBytes[block + aByte]);
-                }
-                
-                int[] passedIp = passThroughIPTable(currentBlock);
-                int[] leftHalf = Arrays.copyOfRange(passedIp, 4, 7);
-                int[] rightHalf = Arrays.copyOfRange(passedIp, 0, 3);
-                
-                for(int round = 0; round < 16; round++)
-                {
-                    int[] fOutput = f(rightHalf, keys[round]);
-                }     
-            }
-        } catch (Throwable e)
-        {
-            e.printStackTrace();
+            fOutput = f(rightHalf, keys[round]);
+            xoredLeftHalf = xor(leftHalf, fOutput);
+            leftHalf = rightHalf;
+            rightHalf = xoredLeftHalf;
         }
+        thirtyTwoBitSwapTemp = rightHalf;
+        rightHalf = leftHalf;
+        leftHalf = thirtyTwoBitSwapTemp;
+        String rightHalfString = "";
+        String leftHalfString = "";
+        for (int aByte = 0; aByte < leftHalf.length; aByte++)
+        {
+            String leftNumAsByte = Integer.toBinaryString(leftHalf[aByte]);
+            String rightNumAsByte = Integer.toBinaryString(rightHalf[aByte]);
+            int leftZerosToAdd = 8 - leftNumAsByte.length();
+            int rightZerosToAdd = 8 - rightNumAsByte.length();
+            for (int j = 0; j < leftZerosToAdd; j++)
+                leftNumAsByte = "0" + leftNumAsByte;
+            for (int j = 0; j < rightZerosToAdd; j++)
+                rightNumAsByte = "0" + rightNumAsByte;
+            leftHalfString = leftNumAsByte + leftHalfString;
+            rightHalfString = rightNumAsByte + rightHalfString;
+        }
+        String bitsToInvert = leftHalfString + rightHalfString;
+        String processedTextString = InvIP(bitsToInvert);
+        int[] processedText = new int[8];
+        
+        for (int k = 0; k < processedText.length; k++)
+        {
+            processedText[processedText.length - 1 - k] = Integer.parseInt(processedTextString.substring(k * 8, k * 8 + 8), 2);
+        }
+
+        return processedText;
     }
     
     public int[][] generateKeys()
@@ -404,9 +436,7 @@ public class DES
             String numAsByte = Integer.toBinaryString(arr[i]);
             int moreZeros = 8 - numAsByte.length();
             for (int j = 0; j < moreZeros; j++)
-            {
                 numAsByte = "0" + numAsByte;
-            }
             before = numAsByte + before;
         }
         String after = "";
@@ -420,10 +450,7 @@ public class DES
             String newSeq = Integer.toBinaryString(newInt);
             int moreZeros = 4 - newSeq.length();
             for (int j = 0; j < moreZeros; j++)
-            {
                 newSeq = "0" + newSeq;
-            }
-            System.out.println(seq + " --> " + newSeq);
             after = after + newSeq;
         }
         
@@ -546,9 +573,7 @@ public class DES
     {
     	int[] xoredValue = new int[leftOperand.length];
     	for(int aByte = 0; aByte < leftOperand.length; aByte++)
-    	{
     		xoredValue[aByte] = leftOperand[aByte] ^ rightOperand[aByte]; 
-    	}
     	return xoredValue;
     }
     
