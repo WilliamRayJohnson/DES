@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ public class DESTest
     {
         this.cipher = new DES(16);
         this.plainText = "GreatDES";
+        cipher.setKey("0001001100110100010101110111100110011011101111001101111111110001");
         this.converter = new ByteArrayOutputStream();
         this.converter.write(plainText.getBytes());
         this.plainTextBlock = this.converter.toByteArray();
@@ -28,9 +30,14 @@ public class DESTest
     @Test 
     public void testGenerateKeys()
     {
-        cipher.setKey("0001001100110100010101110111100110011011101111001101111111110001");
         int[][] expectedOutput = {{114, 112, 252, 239, 2, 27}, {229, 201, 219, 217, 174, 121},
-                                    {153, 207, 66, 138, 252, 85}, {29, 53, 219, 214, 173, 114}};
+                                    {153, 207, 66, 138, 252, 85}, {29, 53, 219, 214, 173, 114},           
+                                    {168, 83, 235, 7, 236, 124}, {47, 123, 80, 62, 165, 99},            
+                                    {188, 24, 246, 183, 132, 236}, {251, 59, 193, 58, 138, 247},           
+                                    {129, 231, 237, 235, 219, 224}, {79, 70, 186, 71, 243, 177},
+                                    {134, 211, 222, 211, 95, 33}, {233, 103, 148, 245, 113, 117},
+                                    {65, 186, 250, 209, 197, 151}, {58, 231, 242, 183, 67, 95},
+                                    {10, 63, 61, 141, 145, 191}, {245, 23, 14, 139, 61, 203}};
         int[][] actualOutput = cipher.generateKeys();
         assertEquals(expectedOutput[0][0], actualOutput[0][0]);
         assertEquals(expectedOutput[0][1], actualOutput[0][1]);
@@ -56,6 +63,30 @@ public class DESTest
         assertEquals(expectedOutput[3][3], actualOutput[3][3]);
         assertEquals(expectedOutput[3][4], actualOutput[3][4]);
         assertEquals(expectedOutput[3][5], actualOutput[3][5]);
+        assertEquals(expectedOutput[4][0], actualOutput[4][0]);
+        assertEquals(expectedOutput[4][1], actualOutput[4][1]);
+        assertEquals(expectedOutput[4][2], actualOutput[4][2]);
+        assertEquals(expectedOutput[4][3], actualOutput[4][3]);
+        assertEquals(expectedOutput[4][4], actualOutput[4][4]);
+        assertEquals(expectedOutput[4][5], actualOutput[4][5]);
+        assertEquals(expectedOutput[5][0], actualOutput[5][0]);
+        assertEquals(expectedOutput[5][1], actualOutput[5][1]);
+        assertEquals(expectedOutput[5][2], actualOutput[5][2]);
+        assertEquals(expectedOutput[5][3], actualOutput[5][3]);
+        assertEquals(expectedOutput[5][4], actualOutput[5][4]);
+        assertEquals(expectedOutput[5][5], actualOutput[5][5]);
+        assertEquals(expectedOutput[6][0], actualOutput[6][0]);
+        assertEquals(expectedOutput[6][1], actualOutput[6][1]);
+        assertEquals(expectedOutput[6][2], actualOutput[6][2]);
+        assertEquals(expectedOutput[6][3], actualOutput[6][3]);
+        assertEquals(expectedOutput[6][4], actualOutput[6][4]);
+        assertEquals(expectedOutput[6][5], actualOutput[6][5]);
+        assertEquals(expectedOutput[7][0], actualOutput[7][0]);
+        assertEquals(expectedOutput[7][1], actualOutput[7][1]);
+        assertEquals(expectedOutput[7][2], actualOutput[7][2]);
+        assertEquals(expectedOutput[7][3], actualOutput[7][3]);
+        assertEquals(expectedOutput[7][4], actualOutput[7][4]);
+        assertEquals(expectedOutput[7][5], actualOutput[7][5]);
     }
 
     @Test
@@ -178,7 +209,6 @@ public class DESTest
     @Test
     public void testEncrypt()
     {
-        cipher.setKey("0001001100110100010101110111100110011011101111001101111111110001");
         int[] plainText = {239, 205, 171, 137, 103, 69, 35, 1};
         int[] expectedCipherText = {5, 180, 10, 15, 84, 19, 232, 133};
         int[] actualCipherText = cipher.encrypt(plainText);
@@ -214,5 +244,21 @@ public class DESTest
         assertEquals(expectedCipherText[5], actualCipherText[5]);
         assertEquals(expectedCipherText[6], actualCipherText[6]);
         assertEquals(expectedCipherText[7], actualCipherText[7]);
+    }
+    
+    @Test
+    public void testDecrypt()
+    {
+        int[] cipherText = {5, 180, 10, 15, 84, 19, 232, 133};
+        int[] expectedPlainText = {239, 205, 171, 137, 103, 69, 35, 1};
+        int[] actualPlainText = cipher.decrypt(cipherText);
+        assertEquals(expectedPlainText[0], actualPlainText[0]);
+        assertEquals(expectedPlainText[1], actualPlainText[1]);
+        assertEquals(expectedPlainText[2], actualPlainText[2]);
+        assertEquals(expectedPlainText[3], actualPlainText[3]);
+        assertEquals(expectedPlainText[4], actualPlainText[4]);
+        assertEquals(expectedPlainText[5], actualPlainText[5]);
+        assertEquals(expectedPlainText[6], actualPlainText[6]);
+        assertEquals(expectedPlainText[7], actualPlainText[7]);
     }
 }

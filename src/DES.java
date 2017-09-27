@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,14 +77,23 @@ public class DES
     
     /**
      * Encrypts a single 64-bit block using DES
-     * @param currentBlock An array of integers representing the 8 bytes of plain text
+     * @param plainText An array of integers representing the 8 bytes of plain text
      */
-    public int[] encrypt(int[] currentBlock)
+    public int[] encrypt(int[] plainText)
     {
         int[][] keys = generateKeys();
-        int[] cipherText = DESAlgorithm(keys, currentBlock);
+        int[] cipherText = DESAlgorithm(keys, plainText);
         
         return cipherText;  
+    }
+    
+    public int[] decrypt(int[] cipherText)
+    {
+        int[][] keys = generateKeys();
+        Collections.reverse(Arrays.asList(keys));
+        int[] plainText = DESAlgorithm(keys, cipherText);
+        
+        return plainText;
     }
     
     public int[] DESAlgorithm(int[][] keys, int[] currentBlock)
@@ -262,7 +272,7 @@ public class DES
             pc2String[j] = pc2(leftShifts[j], rightShifts[j]);
             for (int k = 0; k < 6; k++)
             {
-                keys[j][k] = Integer.parseInt(pc2String[j].substring(k * 8, k * 8 + 8), 2);
+                keys[j][5 - k] = Integer.parseInt(pc2String[j].substring(k * 8, k * 8 + 8), 2);
             }
         }
         
@@ -303,55 +313,13 @@ public class DES
      */
     public static String pc2(String roundL, String roundR)
     {
+        String pc2 = roundL + roundR;
         String temp = "";
-        temp += roundL.charAt(13);
-        temp += roundL.charAt(16);
-        temp += roundL.charAt(10);
-        temp += roundL.charAt(23);
-        temp += roundL.charAt(0);
-        temp += roundL.charAt(4);
-        temp += roundL.charAt(2);
-        temp += roundL.charAt(27);
-        temp += roundL.charAt(14);
-        temp += roundL.charAt(5);
-        temp += roundL.charAt(20);
-        temp += roundL.charAt(9);
-        temp += roundL.charAt(22);
-        temp += roundL.charAt(18);
-        temp += roundL.charAt(11);
-        temp += roundL.charAt(3);
-        temp += roundL.charAt(25);
-        temp += roundL.charAt(7);
-        temp += roundL.charAt(15);
-        temp += roundL.charAt(6);
-        temp += roundL.charAt(26);
-        temp += roundL.charAt(19);
-        temp += roundL.charAt(12);
-        temp += roundL.charAt(1);
-        temp += roundR.charAt(12);
-        temp += roundR.charAt(23);
-        temp += roundR.charAt(3);
-        temp += roundR.charAt(8);
-        temp += roundR.charAt(18);
-        temp += roundR.charAt(26);
-        temp += roundR.charAt(1);
-        temp += roundR.charAt(22);
-        temp += roundR.charAt(24);
-        temp += roundR.charAt(16);
-        temp += roundR.charAt(4);
-        temp += roundR.charAt(19);
-        temp += roundR.charAt(15);
-        temp += roundR.charAt(20);
-        temp += roundR.charAt(10);
-        temp += roundR.charAt(27);
-        temp += roundR.charAt(5);
-        temp += roundR.charAt(24);
-        temp += roundR.charAt(17);
-        temp += roundR.charAt(13);
-        temp += roundR.charAt(21);
-        temp += roundR.charAt(7);
-        temp += roundR.charAt(0);
-        temp += roundR.charAt(3);
+        int[] table = {13, 16, 10, 23, 0, 4, 2, 27, 14, 5, 20, 9, 22, 18, 11, 3, 25, 
+            7, 15, 6, 26, 19, 12, 1, 40, 51, 30, 36, 46, 54, 29, 39, 50, 44, 
+            32, 47, 43, 48, 38, 55, 33, 52, 45, 41, 49, 35, 28, 31};
+        for( int x=0; x<table.length; x++)
+            temp += pc2.charAt(table[x]);
         return temp;
     }
 
