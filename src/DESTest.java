@@ -191,4 +191,28 @@ public class DESTest
         assertEquals(expectedCipherText[6], actualCipherText[6]);
         assertEquals(expectedCipherText[7], actualCipherText[7]);
     }
+    
+    @Test
+    public void testDESAlgorithm()
+    {
+        int[] plainText = {239, 205, 171, 137, 103, 69, 35, 1};
+        int[][] keys = {{114, 112, 252, 239, 2, 27}, {229, 201, 219, 217, 174, 121},
+                        {153, 207, 66, 138, 252, 85}, {29, 53, 219, 214, 173, 114},           
+                        {168, 83, 235, 7, 236, 124}, {47, 123, 80, 62, 165, 99},            
+                        {188, 24, 246, 183, 132, 236}, {251, 59, 193, 58, 138, 247},           
+                        {129, 231, 237, 235, 219, 224}, {79, 70, 186, 71, 243, 177},
+                        {134, 211, 222, 211, 95, 33}, {233, 103, 148, 245, 113, 117},
+                        {65, 186, 250, 209, 197, 151}, {58, 231, 242, 183, 67, 95},
+                        {10, 63, 61, 141, 145, 191}, {245, 23, 14, 139, 61, 203}};
+        int[] expectedCipherText = {5, 180, 10, 15, 84, 19, 232, 133};
+        int[] actualCipherText = cipher.DESAlgorithm(keys, plainText);
+        assertEquals(expectedCipherText[0], actualCipherText[0]);
+        assertEquals(expectedCipherText[1], actualCipherText[1]);
+        assertEquals(expectedCipherText[2], actualCipherText[2]);
+        assertEquals(expectedCipherText[3], actualCipherText[3]);
+        assertEquals(expectedCipherText[4], actualCipherText[4]);
+        assertEquals(expectedCipherText[5], actualCipherText[5]);
+        assertEquals(expectedCipherText[6], actualCipherText[6]);
+        assertEquals(expectedCipherText[7], actualCipherText[7]);
+    }
 }
