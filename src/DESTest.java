@@ -27,6 +27,25 @@ public class DESTest
         this.plainTextBlock = this.converter.toByteArray();
     }
     
+    @Test
+    public void testEncryptDecrypt()
+    {
+        DES localCipher = new DES(16, "src/key.txt");
+        int[] expectedOutput = new int[8];
+        for(int aByte = 0; aByte < 8; aByte++)
+            expectedOutput[aByte] = Byte.toUnsignedInt(this.plainTextBlock[aByte]);
+        int[] cipherText = localCipher.encrypt(expectedOutput);
+        int[] actaulOutput = localCipher.decrypt(cipherText);
+        assertEquals(expectedOutput[0], actaulOutput[0]);
+        assertEquals(expectedOutput[1], actaulOutput[1]);
+        assertEquals(expectedOutput[2], actaulOutput[2]);
+        assertEquals(expectedOutput[3], actaulOutput[3]);
+        assertEquals(expectedOutput[4], actaulOutput[4]);
+        assertEquals(expectedOutput[5], actaulOutput[5]);
+        assertEquals(expectedOutput[6], actaulOutput[6]);
+        assertEquals(expectedOutput[7], actaulOutput[7]);
+    }
+    
     @Test 
     public void testGenerateKeys()
     {
