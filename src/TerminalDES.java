@@ -1,18 +1,11 @@
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class TerminalDES
 {
-
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+    
     public static void main(String[] args)
     {
         Scanner in = new Scanner(System.in);
@@ -28,20 +21,14 @@ public class TerminalDES
         
         
         DES cipher = new DES(16, keyFileName);
-        ArrayList<Byte> text = new ArrayList<Byte>();
         
         try
         {
-            String content = new String(Files.readAllBytes(Paths.get(plainTextFileName)));
-            byte[] plainTextBytes = content.getBytes();
-            
-            
-            FileWriter fw = new FileWriter("cipherText.txt");
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw);
+            byte[] plainTextBytes = readFromFile(new File(plainTextFileName), UTF8);
 
             int[] currentBlock = new int[8];
             int[] cipherTextBlock = null;
+            StringBuilder cipherText = new StringBuilder(plainTextBytes.length);
             for (int block = 0; block < plainTextBytes.length; block += 8)
             {
                 for (int aByte = 0; aByte < 8; aByte++)
@@ -71,14 +58,10 @@ public class TerminalDES
                     output[ascii] = (byte) cipherTextBlock[ascii];
                     
                     
-                out.print(new String(output));
-
+                cipherText.append(new String(output));
             }
             
-            out.flush();
-            out.close();
-            bw.close();
-            fw.close();
+            writeToFile(new File("cipherText.txt"), UTF8, cipherText.toString());
             
         } catch (Exception e)
         {
@@ -86,6 +69,61 @@ public class TerminalDES
 
         }
 
+    }
+    
+    /**
+     * Write data to a file given a particular character set.
+     * Code found at http://illegalargumentexception.blogspot.com/2009/05/java-rough-guide-to-character-encoding.html
+     * @param file The file to write to
+     * @param charset The character set to use
+     * @param data The data to write
+     * @throws IOException
+     */
+    public static void writeToFile(File file, Charset charset, String data) throws IOException
+    {
+        OutputStream out = new FileOutputStream(file);
+        Closeable stream = out;
+        try
+        {
+            Writer writer = new OutputStreamWriter(out, charset);
+            stream = writer;
+            writer.write(data);
+        } finally
+        {
+            stream.close();
+        }
+    }
+
+    /**
+     * Reads data from a file using a particular character set
+     * Code found at http://illegalargumentexception.blogspot.com/2009/05/java-rough-guide-to-character-encoding.html
+     * @param file The file to read from
+     * @param charset The character set to use
+     * @return An array of bytes representing the character's value
+     * @throws IOException
+     */
+    public static byte[] readFromFile(File file, Charset charset) throws IOException
+    {
+        InputStream in = new FileInputStream(file);
+        Closeable stream = in;
+        try
+        {
+            Reader reader = new InputStreamReader(in, charset);
+            stream = reader;
+            StringBuilder inputBuilder = new StringBuilder();
+            char[] buffer = new char[1024];
+            while (true)
+            {
+                int readCount = reader.read(buffer);
+                if (readCount < 0)
+                    break;
+                inputBuilder.append(buffer, 0, readCount);
+            }
+            return inputBuilder.toString().getBytes();
+        } finally
+        {
+            stream.close();
+        }
     }
 
 }
