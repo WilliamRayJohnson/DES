@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.math.BigInteger;
 
@@ -54,11 +52,20 @@ public class DES
     private String key;
     
       
+    /**
+     * 
+     * @param rounds
+     */
     public DES(int rounds)
     {
         this.rounds = rounds;
     }
     
+    /**
+     * 
+     * @param rounds
+     * @param keyFileName
+     */
     public DES(int rounds, String keyFileName)
     {
         try
@@ -78,6 +85,7 @@ public class DES
     /**
      * Encrypts a single 64-bit block using DES
      * @param plainText An array of integers representing the 8 bytes of plain text
+     * @return An array of integers representing the 8 bytes of cipher text
      */
     public int[] encrypt(int[] plainText)
     {
@@ -87,6 +95,11 @@ public class DES
         return cipherText;  
     }
     
+    /**
+     * Decrypts a single 64-bit block using DES
+     * @param cipherText
+     * @return the An array of integers representing the 8 bytes of plain text
+     */
     public int[] decrypt(int[] cipherText)
     {
         int[][] keys = generateKeys();
@@ -96,6 +109,12 @@ public class DES
         return plainText;
     }
     
+    /**
+     * The DES algorithm
+     * @param keys the keys to be used
+     * @param currentBlock the block of data to run through the algorithm
+     * @return the result of the block being run through n number of rounds
+     */
     public int[] DESAlgorithm(int[][] keys, int[] currentBlock)
     {
         int[] fOutput;
@@ -143,6 +162,10 @@ public class DES
         return processedText;
     }
     
+    /**
+     * Generates keys given what is in the key field
+     * @return the keys to be used in the 16 rounds of DES
+     */
     public int[][] generateKeys()
     {
         // PC-1
@@ -324,7 +347,7 @@ public class DES
     }
 
     /**
-     *
+     * Converts the S box output to a certain permutation
      * @param sBox String of size 32
      * @return finalString String of size 32
      */
@@ -367,6 +390,11 @@ public class DES
         return finalString;
     }
     
+    /**
+     * Pass 64-bit value through the inverse initial permutation table
+     * @param binary The binary represented as a string
+     * @return the value passed through the inverse IP table
+     */
     public String InvIP(String binary)
     {
         int[] invIPTable = new int[]
@@ -392,7 +420,6 @@ public class DES
     /**
      * This method converts the array of integers (which is the 48 bit sequence preceding the s-box into a String of 32
      * bits.
-     *
      * @param arr The array of integers from the previous XOR
      * @return String of 32 bits
      */
