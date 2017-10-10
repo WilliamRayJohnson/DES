@@ -455,10 +455,10 @@ public class DES
     
     /**
      * Pass 64-bit plain text through the initial permutation table
-     * @param plainText An array of 8 integers representing the plain text
+     * @param text An array of 8 integers representing the plain text
      * @return The result of IP table as an array of 8 integers
      */
-    public int[] passThroughIPTable(int[] plainText)
+    public int[] passThroughIPTable(int[] text)
     {
         int shiftAmount;
         int mask;
@@ -472,7 +472,7 @@ public class DES
             mask = 1;
             for(int bit = 0; bit <= 7; bit++)
             {
-                maskedByte = (plainText[bite] & mask);
+                maskedByte = (text[bite] & mask);
                 if(shiftAmount >= 0)
                     maskedByte = (maskedByte << shiftAmount);
                 else if(shiftAmount < 0)
@@ -481,6 +481,30 @@ public class DES
                 shiftAmount--;
                 mask = (mask << 1);
             }
+        }
+        return IPPassed;
+    }
+    
+    /**
+     * Pass 64-bit plain text through the initial permutation table
+     * @param text a 64-bit BigInteger
+     * @return The result of IP table as a BigInteger
+     */
+    public BigInteger passThroughIPTable(BigInteger text){
+        int[] ipTable =
+        { 58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54, 46, 38, 30, 22, 14, 6, 64, 56, 48, 40,
+                32, 24, 16, 8, 57, 49, 41, 33, 25, 17, 9, 1, 59, 51, 43, 35, 27, 19, 11, 3, 61, 53, 45, 37, 29, 21, 13,
+                5, 63, 55, 47, 39, 31, 23, 15, 7 };
+        BigInteger two = new BigInteger("2");
+        BigInteger IPPassed = new BigInteger("0");
+        int power;
+        BigInteger relevantBit;
+        for (int bit = 0; bit < ipTable.length; bit++)
+        {
+            power = ipTable[bit];
+            relevantBit = text.and(two.pow(power - 1));
+            if (relevantBit.bitCount() > 0)
+                IPPassed = IPPassed.setBit(bit);
         }
         return IPPassed;
     }

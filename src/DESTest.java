@@ -2,9 +2,9 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -111,17 +111,12 @@ public class DESTest
     @Test
     public void testPassThroughIPTableDESExample()
     {   
-        int[] plainText = {239, 205, 171, 137, 103, 69, 35, 1};
-        int[] expectedOutput = {170, 240, 170, 240, 255, 204, 0, 204};
-        int[] actaulOutput = cipher.passThroughIPTable(plainText);
-        assertEquals(expectedOutput[0], actaulOutput[0]);
-        assertEquals(expectedOutput[1], actaulOutput[1]);
-        assertEquals(expectedOutput[2], actaulOutput[2]);
-        assertEquals(expectedOutput[3], actaulOutput[3]);
-        assertEquals(expectedOutput[4], actaulOutput[4]);
-        assertEquals(expectedOutput[5], actaulOutput[5]);
-        assertEquals(expectedOutput[6], actaulOutput[6]);
-        assertEquals(expectedOutput[7], actaulOutput[7]);
+        byte[] plainTextByteArray = {1, 35, 69, 103, (byte) 137, (byte) 171, (byte) 205, (byte) 239};
+        BigInteger plainText = new BigInteger(plainTextByteArray);
+        byte[] expectedOutputByteArray = {0, (byte) 204, 0, (byte) 204, (byte) 255, (byte) 240, (byte) 170, (byte) 240, (byte) 170};
+        BigInteger expectedOutput = new BigInteger(expectedOutputByteArray);
+        BigInteger actaulOutput = cipher.passThroughIPTable(plainText);
+        assertEquals(expectedOutput, actaulOutput);
     }
     
     @Test
