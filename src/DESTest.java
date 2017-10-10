@@ -134,6 +134,16 @@ public class DESTest
     }
     
     @Test
+    public void testExpandedBytesBigInteger(){
+        byte[] rightBlockByteArray = {(byte) 240, (byte) 170, (byte) 240, (byte) 170};
+        byte[] expectedOutputByteArray = {122, 21, 85, 122, 21, 85};
+        BigInteger rightBlock = new BigInteger(rightBlockByteArray);
+        BigInteger expectedOutput = new BigInteger(expectedOutputByteArray);
+        BigInteger actualOutput = cipher.expandBytes(rightBlock);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
     public void testGetNibbles()
     {
         int[] rightBlock = {170, 240, 170, 240};
