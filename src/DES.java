@@ -495,17 +495,7 @@ public class DES
         { 58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54, 46, 38, 30, 22, 14, 6, 64, 56, 48, 40,
                 32, 24, 16, 8, 57, 49, 41, 33, 25, 17, 9, 1, 59, 51, 43, 35, 27, 19, 11, 3, 61, 53, 45, 37, 29, 21, 13,
                 5, 63, 55, 47, 39, 31, 23, 15, 7 };
-        BigInteger two = new BigInteger("2");
-        BigInteger IPPassed = new BigInteger("0");
-        int power;
-        BigInteger relevantBit;
-        for (int bit = 0; bit < ipTable.length; bit++)
-        {
-            power = ipTable[bit];
-            relevantBit = text.and(two.pow(power - 1));
-            if (relevantBit.bitCount() > 0)
-                IPPassed = IPPassed.setBit(bit);
-        }
+        BigInteger IPPassed = passThroughTable(text, ipTable);
         return IPPassed;
     }
     
@@ -538,6 +528,40 @@ public class DES
             
         
         return expandedBytes;
+    }
+    
+    /**
+     * Expand a 32 bit number to a 48 bit number
+     * @param rightBlock a 32-bit BigInteger
+     * @return the expanded 48-bit BigInteger
+     */
+    public BigInteger expandBytes(BigInteger rightBlock){
+        int[] eTable =
+        { 32, 1, 2, 3, 4, 5, 4, 5, 6, 7, 8, 9, 8, 9, 10, 11, 12, 13, 12, 13, 14, 15, 16, 17, 16, 17, 18, 19, 20, 21, 20,
+                21, 22, 23, 24, 25, 24, 25, 26, 27, 28, 29, 28, 29, 30, 31, 32, 1 };
+        BigInteger expandedBytes = passThroughTable(rightBlock, eTable);
+        return expandedBytes;
+    }
+    
+    /**
+     * Takes a number that to pass through a DES table and outputs the relevant number
+     * @param number a BigInteger
+     * @param table the relevant table
+     * @return the passed through value
+     */
+    private BigInteger passThroughTable(BigInteger number, int[] table){
+        BigInteger two = new BigInteger("2");
+        BigInteger passedNumber = new BigInteger("0");
+        BigInteger relevantBit;
+        int power;
+        for (int bit = 0; bit < table.length; bit++)
+        {
+            power = table[bit];
+            relevantBit = number.and(two.pow(power - 1));
+            if (relevantBit.bitCount() > 0)
+                passedNumber = passedNumber.setBit(bit);
+        }
+        return passedNumber;
     }
     
     /**
