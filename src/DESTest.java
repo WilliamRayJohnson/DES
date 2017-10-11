@@ -120,6 +120,24 @@ public class DESTest
     }
     
     @Test
+    public void testIPWithLittleEndian()
+    {
+        BigInteger plainText = new BigInteger("81985529216486895");
+        BigInteger expectedOutput = new BigInteger("14699974583363760298");
+        BigInteger actaulOutput = cipher.passThroughIPTable(plainText);
+        assertEquals(expectedOutput, actaulOutput);
+    }
+    
+    @Test
+    public void testIPWithBigEndian()
+    {
+        BigInteger plainText = new BigInteger("17848844570815808640");
+        BigInteger expectedOutput = new BigInteger("6129211145068937267");
+        BigInteger actaulOutput = cipher.passThroughIPTable(plainText);
+        assertEquals(expectedOutput, actaulOutput);
+    }
+    
+    @Test
     public void testExpandBytes()
     {
         int[] rightBlock = {170, 240, 170, 240};
@@ -205,6 +223,26 @@ public class DESTest
         String pTableInput = "01011100100000101011010110010111";
         String expectedOutput = "00100011010010101010100110111011";
         String actualOutput = cipher.pTable(pTableInput);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testPTableWithBigInteger()
+    {
+        byte[] pTableInputByteArray = {92, (byte) 130, (byte) 181, (byte) 151};
+        byte[] expectedOutputByteArray ={35, 74, (byte) 169, (byte) 187};
+        BigInteger pTableInput = new BigInteger(pTableInputByteArray);
+        BigInteger expectedOutput = new BigInteger(expectedOutputByteArray);
+        BigInteger actualOutput = cipher.pTable(pTableInput);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testPTableWithBigEndian()
+    {
+        BigInteger pTableInput = new BigInteger("3920445754");
+        BigInteger expectedOutput = new BigInteger("3717550788");
+        BigInteger actualOutput = cipher.pTable(pTableInput);
         assertEquals(expectedOutput, actualOutput);
     }
     
