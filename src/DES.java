@@ -552,7 +552,20 @@ public class DES
      */
     public BigInteger getSboxValue(BigInteger chunk, Integer[][] sBox)
     {
-        return null;
+        BigInteger col;
+        BigInteger row;
+        BigInteger colMask = new BigInteger("30");
+        BigInteger rowMask = new BigInteger("33");
+        BigInteger sBoxValue;
+        boolean set2ndRowBit = false;
+        if(chunk.intValue() >= 32)
+            set2ndRowBit = true;
+        col = chunk.and(colMask).shiftRight(1);
+        row = chunk.and(rowMask).clearBit(5);
+        if (set2ndRowBit)
+            row.setBit(2);
+        sBoxValue = new BigInteger(Integer.toString(sBox[row.intValue()][col.intValue()]));
+        return sBoxValue;
     }
     
     /**
