@@ -106,6 +106,24 @@ public class DESTest
         assertEquals(expectedOutput[7][4], actualOutput[7][4]);
         assertEquals(expectedOutput[7][5], actualOutput[7][5]);
     }
+    
+    @Test
+    public void testPc2WithBigInteger()
+    {
+        BigInteger key56Bit = new BigInteger("63500464316796702");
+        BigInteger pc2Key = new BigInteger("29699430183026");
+        BigInteger pc2KeyActual = cipher.pc2(key56Bit);
+        assertEquals(pc2Key, pc2KeyActual);
+    }
+    
+    @Test
+    public void testPc1WithBigInteger()
+    {
+        BigInteger key = new BigInteger("1383827165325090801");
+        BigInteger key56Bit = new BigInteger("67779029043144591");
+        BigInteger actualKey56Bit = cipher.pc1(key);
+        assertEquals(key56Bit, actualKey56Bit);
+    }
 
     @Test
     public void testPassThroughIPTableDESExample()
@@ -266,6 +284,16 @@ public class DESTest
         String actualOutput = cipher.InvIP(rightAndLeft);
         assertEquals(expectedOutput, actualOutput);
     }
+    
+    @Test
+    public void testInvIPWithBigInteger()
+    {
+        BigInteger rightAndLeft = new BigInteger("742207273711055412");
+        BigInteger expectedOutput = new BigInteger("9648983453391827973");
+        BigInteger actualOutput = cipher.InvIP(rightAndLeft);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
     
     @Test
     public void testEncrypt()
