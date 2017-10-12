@@ -235,6 +235,15 @@ public class DESTest
     }
     
     @Test
+    public void testSBoxWithBigInteger()
+    {
+        BigInteger xoredBytes = new BigInteger("106754541511975");
+        BigInteger expectedOutput = new BigInteger("1552070039");
+        BigInteger actualOutput = cipher.passThroughSBox(xoredBytes);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
     public void testPTable()
     {
         String pTableInput = "01011100100000101011010110010111";
