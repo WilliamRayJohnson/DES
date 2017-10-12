@@ -30,12 +30,11 @@ public class DESTest
     @Test
     public void testEncryptDecrypt()
     {
-        DES localCipher = new DES(16, "src/key.txt");
         int[] expectedOutput = new int[8];
         for(int aByte = 0; aByte < 8; aByte++)
             expectedOutput[aByte] = Byte.toUnsignedInt(this.plainTextBlock[aByte]);
-        int[] cipherText = localCipher.encrypt(expectedOutput);
-        int[] actaulOutput = localCipher.decrypt(cipherText);
+        int[] cipherText = cipher.encrypt(expectedOutput);
+        int[] actaulOutput = cipher.decrypt(cipherText);
         assertEquals(expectedOutput[0], actaulOutput[0]);
         assertEquals(expectedOutput[1], actaulOutput[1]);
         assertEquals(expectedOutput[2], actaulOutput[2]);
@@ -120,7 +119,7 @@ public class DESTest
     }
     
     @Test
-    public void testIPWithLittleEndian()
+    public void testIPWithBigEndian()
     {
         BigInteger plainText = new BigInteger("81985529216486895");
         BigInteger expectedOutput = new BigInteger("14699974583363760298");
@@ -129,7 +128,7 @@ public class DESTest
     }
     
     @Test
-    public void testIPWithBigEndian()
+    public void testIPWithLittleEndian()
     {
         BigInteger plainText = new BigInteger("17848844570815808640");
         BigInteger expectedOutput = new BigInteger("6129211145068937267");
@@ -240,8 +239,8 @@ public class DESTest
     @Test
     public void testPTableWithBigEndian()
     {
-        BigInteger pTableInput = new BigInteger("3920445754");
-        BigInteger expectedOutput = new BigInteger("3717550788");
+        BigInteger pTableInput = new BigInteger("1552070039");
+        BigInteger expectedOutput = new BigInteger("592095675");
         BigInteger actualOutput = cipher.pTable(pTableInput);
         assertEquals(expectedOutput, actualOutput);
     }

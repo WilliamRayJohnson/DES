@@ -578,13 +578,17 @@ public class DES
         BigInteger two = new BigInteger("2");
         BigInteger passedNumber = new BigInteger("0");
         BigInteger relevantBit;
+        int numberBitLength;
+        int[] sortedTable = Arrays.copyOf(table, table.length);
+        Arrays.sort(sortedTable); 
+        numberBitLength = sortedTable[sortedTable.length - 1];
         int power;
         for (int bit = 0; bit < table.length; bit++)
         {
             power = table[bit];
-            relevantBit = number.and(two.pow(power - 1));
+            relevantBit = number.and(two.pow(Math.abs(power - numberBitLength)));
             if (relevantBit.bitCount() > 0) //.bitCount() may cause problems
-                passedNumber = passedNumber.setBit(bit);
+                passedNumber = passedNumber.setBit(table.length - bit - 1);
         }
         return passedNumber;
     }
