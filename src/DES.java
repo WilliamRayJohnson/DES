@@ -523,6 +523,39 @@ public class DES
     }
     
     /**
+     * Substitutes 6-bit chunks of a 48-bit number into 4-bit chunks
+     * @param xoredData The 48-bit BigInteger from the previous XOR
+     * @return the resulting substituted 32-bit number
+     */
+    public BigInteger passThroughSBox(BigInteger xoredData)
+    {
+        BigInteger initialBoxMask = new BigInteger("0111111000000000000000000000000000000000000000000");
+        BigInteger finalSubstitutedNumber = new BigInteger("0");
+        BigInteger boxMask;
+        BigInteger sixBitChunk;
+        BigInteger substitutedNumber;
+        for(int chunk = 0; chunk < 8; chunk++)
+        {
+            boxMask = initialBoxMask.shiftRight(6 * chunk);
+            sixBitChunk = xoredData.and(boxMask).shiftRight(42 - (6*chunk));
+            substitutedNumber = getSboxValue(sixBitChunk, sBoxes[chunk]).shiftLeft(28 - (4*chunk));
+            finalSubstitutedNumber = finalSubstitutedNumber.or(substitutedNumber);
+        }
+        return finalSubstitutedNumber;
+    }
+    
+    /**
+     * Returns the appropriate value in a given S-Box given a chunk
+     * @param chunk 6-bit number
+     * @param sBox the appropriate S-Box
+     * @return the value in the S-Box
+     */
+    public BigInteger getSboxValue(BigInteger chunk, Integer[][] sBox)
+    {
+        return null;
+    }
+    
+    /**
      * Pass 64-bit plain text through the initial permutation table
      * @param text An array of 8 integers representing the plain text
      * @return The result of IP table as an array of 8 integers
