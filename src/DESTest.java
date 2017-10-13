@@ -299,6 +299,16 @@ public class DESTest
     }
     
     @Test
+    public void testFWithBigInteger()
+    {
+        BigInteger rightBlock = new BigInteger("4037734570");
+        BigInteger key = new BigInteger("29699430183026");
+        BigInteger expectedOutput = new BigInteger("592095675");
+        BigInteger actualOutput = cipher.f(rightBlock, key);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
     public void testInvIP()
     {
         String rightAndLeft = "0000101001001100110110011001010101000011010000100011001000110100";
@@ -355,6 +365,32 @@ public class DESTest
         assertEquals(expectedCipherText[5], actualCipherText[5]);
         assertEquals(expectedCipherText[6], actualCipherText[6]);
         assertEquals(expectedCipherText[7], actualCipherText[7]);
+    }
+    
+    @Test
+    public void testDESAlgorithmWithBigInteger()
+    {
+        BigInteger plainText = new BigInteger("81985529216486895");
+        ArrayList<BigInteger> keys = new ArrayList<BigInteger>();
+        keys.add(new BigInteger("29699430183026"));
+        keys.add(new BigInteger("133791886330341"));
+        keys.add(new BigInteger("94543139753881"));
+        keys.add(new BigInteger("126090959598877"));
+        keys.add(new BigInteger("137353186988968"));
+        keys.add(new BigInteger("109561366215471"));
+        keys.add(new BigInteger("260054766196924"));
+        keys.add(new BigInteger("272173063289851"));
+        keys.add(new BigInteger("247235160696705"));
+        keys.add(new BigInteger("195658438559311"));
+        keys.add(new BigInteger("36695460205446"));
+        keys.add(new BigInteger("129132311898089"));
+        keys.add(new BigInteger("166875887221313"));
+        keys.add(new BigInteger("104744453596986"));
+        keys.add(new BigInteger("210631860764426"));
+        keys.add(new BigInteger("223465186400245"));
+        BigInteger expectedCipherText = new BigInteger("9648983453391827973");
+        BigInteger actualCipherText = cipher.DESAlgorithm(keys, plainText);
+        assertEquals(expectedCipherText, actualCipherText);
     }
     
     @Test
