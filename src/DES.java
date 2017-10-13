@@ -163,6 +163,37 @@ public class DES
     }
     
     /**
+     * The DES algorithm
+     * @param keys the keys to be used
+     * @param currentBlock the block of data to run through the algorithm
+     * @return the result of the block being run through n number of rounds
+     */
+    public BigInteger DESAlgorithm(ArrayList<BigInteger> keys, BigInteger currentBlock){
+        BigInteger fOutput;
+        BigInteger xoredLeftHalf;
+        BigInteger thirtyTwoBitSwapTemp;
+        
+        BigInteger passedIP = passThroughIPTable(currentBlock);
+        BigInteger rightHalf = passedIP.and(new BigInteger("4294967295"));
+        BigInteger leftHalf = passedIP.and(new BigInteger("18446744069414584320")).shiftRight(32);
+        for (int round = 0; round < this.rounds; round++)
+        {
+            fOutput = f(rightHalf, keys.get(round));
+            xoredLeftHalf = fOutput.xor(leftHalf);
+            leftHalf = rightHalf;
+            rightHalf = xoredLeftHalf;
+        }
+        thirtyTwoBitSwapTemp = rightHalf;
+        rightHalf = leftHalf;
+        leftHalf = thirtyTwoBitSwapTemp;
+        BigInteger bitsToInvert = BigInteger.ZERO.or(rightHalf);
+        bitsToInvert.or(leftHalf.shiftLeft(32));
+        BigInteger processedText = InvIP(bitsToInvert);
+        
+        return processedText;
+    }
+    
+    /**
      * Generates keys given what is in the key field
      * @return the keys to be used in the 16 rounds of DES
      */
@@ -333,6 +364,20 @@ public class DES
             afterPTableInt[3 - aByte] = Integer.parseInt(afterPTable.substring(aByte * 8, aByte * 8 + 8), 2);
         }
         return afterPTableInt;
+    }
+    
+    /**
+     * F function of DES
+     * @param rightHalf 32-bit right half of data
+     * @param key the current round's key
+     * @return the resulting 32-bit BigInteger
+     */
+    public BigInteger f(BigInteger rightHalf, BigInteger key){
+        BigInteger expandedHalf = expandBytes(rightHalf);
+        BigInteger xoredKeyAndHalf = expandedHalf.xor(key);
+        BigInteger passedSBox = passThroughSBox(xoredKeyAndHalf);
+        BigInteger afterPTable = pTable(passedSBox);
+        return afterPTable;
     }
 
     /**
