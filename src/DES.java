@@ -529,7 +529,7 @@ public class DES
      */
     public BigInteger passThroughSBox(BigInteger xoredData)
     {
-        BigInteger initialBoxMask = new BigInteger("0111111000000000000000000000000000000000000000000");
+        BigInteger initialBoxMask = new BigInteger("277076930199552");
         BigInteger finalSubstitutedNumber = new BigInteger("0");
         BigInteger boxMask;
         BigInteger sixBitChunk;
@@ -563,7 +563,7 @@ public class DES
         col = chunk.and(colMask).shiftRight(1);
         row = chunk.and(rowMask).clearBit(5);
         if (set2ndRowBit)
-            row.setBit(2);
+            row = row.setBit(1);
         sBoxValue = new BigInteger(Integer.toString(sBox[row.intValue()][col.intValue()]));
         return sBoxValue;
     }
