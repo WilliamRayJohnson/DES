@@ -187,7 +187,7 @@ public class DES
         rightHalf = leftHalf;
         leftHalf = thirtyTwoBitSwapTemp;
         BigInteger bitsToInvert = BigInteger.ZERO.or(rightHalf);
-        bitsToInvert.or(leftHalf.shiftLeft(32));
+        bitsToInvert = bitsToInvert.or(leftHalf.shiftLeft(32));
         BigInteger processedText = InvIP(bitsToInvert);
         
         return processedText;
@@ -348,7 +348,7 @@ public class DES
                            7, 62, 54, 46, 38, 30, 22,
                           14, 6, 61, 53, 45, 37, 29,
                           21, 13, 5, 28, 20, 12, 4};
-        BigInteger key56Bit = passThroughTable(key, pc1Table);
+        BigInteger key56Bit = passThroughTable(key, pc1Table, 64);
         return key56Bit;
     }
     
@@ -423,7 +423,7 @@ public class DES
                           41, 52, 31, 37, 47, 55, 30, 40,
                           51, 45, 33, 48, 44, 49, 39, 56,
                           34, 53, 46, 42, 50, 36, 29, 32};
-        BigInteger pc2Passed = passThroughTable(key, pc2Table);
+        BigInteger pc2Passed = passThroughTable(key, pc2Table, 56);
         return pc2Passed;
     }
 
@@ -481,7 +481,7 @@ public class DES
                          1, 15, 23, 26, 5, 18, 31, 10,
                          2, 8, 24, 14, 32, 27, 3, 9,
                         19, 13, 30, 6, 22, 11, 4, 25};
-        BigInteger pTablePassed = passThroughTable(sBox, pTable);
+        BigInteger pTablePassed = passThroughTable(sBox, pTable, 32);
         return pTablePassed;
     }
     
@@ -522,7 +522,7 @@ public class DES
                              35, 3, 43, 11, 51, 19, 59, 27, 
                              34, 2, 42, 10, 50, 18, 58, 26, 
                              33, 1, 41, 9, 49, 17, 57, 25 };
-        BigInteger invIPPassed = passThroughTable(binary, invIPTable);
+        BigInteger invIPPassed = passThroughTable(binary, invIPTable, 64);
         return invIPPassed;
     }
     
@@ -660,7 +660,7 @@ public class DES
           59, 51, 43, 35, 27, 19, 11, 3, 
           61, 53, 45, 37, 29, 21, 13, 5, 
           63, 55, 47, 39, 31, 23, 15, 7 };
-        BigInteger IPPassed = passThroughTable(text, ipTable);
+        BigInteger IPPassed = passThroughTable(text, ipTable, 64);
         return IPPassed;
     }
     
@@ -710,7 +710,7 @@ public class DES
           20, 21, 22, 23, 24, 25, 
           24, 25, 26, 27, 28, 29, 
           28, 29, 30, 31, 32, 1 };
-        BigInteger expandedBytes = passThroughTable(rightBlock, eTable);
+        BigInteger expandedBytes = passThroughTable(rightBlock, eTable, 32);
         return expandedBytes;
     }
     
@@ -720,19 +720,15 @@ public class DES
      * @param table the relevant table
      * @return the passed through value
      */
-    private BigInteger passThroughTable(BigInteger number, int[] table){
+    private BigInteger passThroughTable(BigInteger number, int[] table, int numberBitLength){
         BigInteger two = new BigInteger("2");
         BigInteger passedNumber = new BigInteger("0");
         BigInteger relevantBit;
-        int numberBitLength;
-        int[] sortedTable = Arrays.copyOf(table, table.length);
-        Arrays.sort(sortedTable); 
-        numberBitLength = sortedTable[sortedTable.length - 1];
         int power;
         for (int bit = 0; bit < table.length; bit++)
         {
             power = table[bit];
-            relevantBit = number.and(two.pow(Math.abs(power - numberBitLength)));
+            relevantBit = number.and(two.pow(numberBitLength - power));
             if (relevantBit.bitCount() > 0) //.bitCount() may cause problems
                 passedNumber = passedNumber.setBit(table.length - bit - 1);
         }
