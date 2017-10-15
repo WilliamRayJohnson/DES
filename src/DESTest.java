@@ -45,6 +45,16 @@ public class DESTest
         assertEquals(expectedOutput[7], actaulOutput[7]);
     }
     
+    @Test
+    public void testEncryptDecryptWithBigInteger()
+    {
+        cipher.setKeyBI(new BigInteger("1383827165325090801"));
+        BigInteger localPlainText = new BigInteger(this.plainTextBlock);
+        BigInteger cipherText = cipher.encrypt(localPlainText);
+        BigInteger decryptedPlainText = cipher.decrypt(cipherText);
+        assertEquals(localPlainText, decryptedPlainText);
+    }
+    
     @Test 
     public void testGenerateKeys()
     {
