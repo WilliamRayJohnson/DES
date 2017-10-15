@@ -334,6 +334,35 @@ public class DES
     }
     
     /**
+     * Generates keys given what is in the key and round fields
+     * @return the keys to be used in each round of DES
+     */
+    public ArrayList<BigInteger> generateKeysBigInteger()
+    {
+        return null;
+    }
+    
+    /**
+     * Cyclically shift a BigInteger
+     * @param input the number to shift
+     * @param bitLength the bit length of the input
+     * @return the shifted number
+     */
+    public BigInteger cyclicalShift(BigInteger input, int shiftAmount, int bitLength)
+    {
+        BigInteger shiftedNumber = input;
+        for(int shiftNumber = 0; shiftNumber < shiftAmount; shiftNumber++){
+            shiftedNumber = shiftedNumber.shiftLeft(1);
+            if(shiftedNumber.bitLength() > bitLength){
+                shiftedNumber = shiftedNumber.clearBit(bitLength);
+                shiftedNumber = shiftedNumber.setBit(0);
+            }  
+        }
+            
+        return shiftedNumber;
+    }
+    
+    /**
      * Passes a 64-bit key through the PC-1 Table
      * @param key a 64-bit BigInteger
      * @return the 56-bit resulting number
