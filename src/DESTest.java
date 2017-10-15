@@ -110,6 +110,7 @@ public class DESTest
     @Test
     public void testGenerateKeysWithBigInteger()
     {
+        cipher.setKeyBI(new BigInteger("1383827165325090801"));
         BigInteger[] expectedOutputAsArray = {new BigInteger("29699430183026"), new BigInteger("133791886330341"), 
                                                 new BigInteger("94543139753881"), new BigInteger("126090959598877"),
                                                 new BigInteger("137353186988968"), new BigInteger("109561366215471"),
@@ -120,7 +121,23 @@ public class DESTest
                                                 new BigInteger("210631860764426"), new BigInteger("223465186400245")};
         ArrayList<BigInteger> expectedOutput = new ArrayList<>(Arrays.asList(expectedOutputAsArray));
         ArrayList<BigInteger> actualOutput = cipher.generateKeysBigInteger();
-        assertEquals(expectedOutput, actualOutput);
+        assertEquals(expectedOutput.size(), actualOutput.size());
+        assertEquals(expectedOutput.get(0), actualOutput.get(0));
+        assertEquals(expectedOutput.get(1), actualOutput.get(1));
+        assertEquals(expectedOutput.get(2), actualOutput.get(2));
+        assertEquals(expectedOutput.get(3), actualOutput.get(3));
+        assertEquals(expectedOutput.get(4), actualOutput.get(4));
+        assertEquals(expectedOutput.get(5), actualOutput.get(5));
+        assertEquals(expectedOutput.get(6), actualOutput.get(6));
+        assertEquals(expectedOutput.get(7), actualOutput.get(7));
+        assertEquals(expectedOutput.get(8), actualOutput.get(8));
+        assertEquals(expectedOutput.get(9), actualOutput.get(9));
+        assertEquals(expectedOutput.get(10), actualOutput.get(10));
+        assertEquals(expectedOutput.get(11), actualOutput.get(11));
+        assertEquals(expectedOutput.get(12), actualOutput.get(12));
+        assertEquals(expectedOutput.get(13), actualOutput.get(13));
+        assertEquals(expectedOutput.get(14), actualOutput.get(14));
+        assertEquals(expectedOutput.get(15), actualOutput.get(15));
     }
     
     @Test
