@@ -111,6 +111,29 @@ public class DES
     }
     
     /**
+     * Encrypts a single 64-bit block using DES
+     * @param plainText A BigInteger representing the 8 bytes of plain text
+     * @return A BigInteger representing the 8 bytes of cipher text
+     */
+    public BigInteger encrypt(BigInteger plainText){
+        ArrayList<BigInteger> keys = generateKeysBigInteger();
+        BigInteger cipherText = DESAlgorithm(keys, plainText);
+        return cipherText;
+    }
+    
+    /**
+     * Decrypts a single 64-bit block using DES
+     * @param cipherText
+     * @return the A BigInteger representing the 8 bytes of plain text
+     */
+    public BigInteger decrypt(BigInteger cipherText){
+        ArrayList<BigInteger> keys = generateKeysBigInteger();
+        Collections.reverse(keys);
+        BigInteger plainText = DESAlgorithm(keys, cipherText);
+        return plainText;
+    }
+    
+    /**
      * The DES algorithm
      * @param keys the keys to be used
      * @param currentBlock the block of data to run through the algorithm
