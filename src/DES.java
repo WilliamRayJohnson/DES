@@ -50,6 +50,7 @@ public class DES
     
     private int rounds;
     private String key;
+    private BigInteger keyBI;
     
       
     /**
@@ -339,7 +340,28 @@ public class DES
      */
     public ArrayList<BigInteger> generateKeysBigInteger()
     {
-        return null;
+        BigInteger pc1Key = pc1(this.keyBI);
+        ArrayList<BigInteger> keys = new ArrayList<BigInteger>();
+        BigInteger currentValue;
+        BigInteger pc2Input;
+        BigInteger rightHalf;
+        BigInteger leftHalf;
+        BigInteger rightMask = new BigInteger("268435455");
+        BigInteger leftMask = new BigInteger("72057593769492480");
+        int[] shiftSchedule = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+        keys.add(pc1Key);
+        for (int round = 0; round < this.rounds; round++){
+            currentValue = keys.get(round);
+            rightHalf = currentValue.and(rightMask);
+            leftHalf = currentValue.and(leftMask).shiftRight(28);
+            rightHalf = cyclicalShift(rightHalf, shiftSchedule[round], 28);
+            leftHalf = cyclicalShift(leftHalf, shiftSchedule[round], 28);
+            pc2Input = rightHalf.or(leftHalf.shiftLeft(28));
+            keys.add(pc2Input);
+            keys.set(round, pc2(pc2Input));
+        }
+        keys.remove(this.rounds);
+        return keys;
     }
     
     /**
@@ -823,5 +845,10 @@ public class DES
     public void setKey(String key)
     {
         this.key = key;
+    }
+    
+    public void setKeyBI(BigInteger key)
+    {
+        this.keyBI = key;
     }
 }
