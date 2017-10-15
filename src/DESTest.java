@@ -108,6 +108,49 @@ public class DESTest
     }
     
     @Test
+    public void testGenerateKeysWithBigInteger()
+    {
+        BigInteger[] expectedOutputAsArray = {new BigInteger("29699430183026"), new BigInteger("133791886330341"), 
+                                                new BigInteger("94543139753881"), new BigInteger("126090959598877"),
+                                                new BigInteger("137353186988968"), new BigInteger("109561366215471"),
+                                                new BigInteger("260054766196924"), new BigInteger("272173063289851"),
+                                                new BigInteger("247235160696705"), new BigInteger("195658438559311"),
+                                                new BigInteger("36695460205446"), new BigInteger("129132311898089"),
+                                                new BigInteger("166875887221313"), new BigInteger("104744453596986"),
+                                                new BigInteger("210631860764426"), new BigInteger("223465186400245")};
+        ArrayList<BigInteger> expectedOutput = new ArrayList<>(Arrays.asList(expectedOutputAsArray));
+        ArrayList<BigInteger> actualOutput = cipher.generateKeysBigInteger();
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testCyclicalShift()
+    {
+        BigInteger input = new BigInteger("2147483648");
+        BigInteger expectedOutput = new BigInteger("1");
+        BigInteger actualOutput = cipher.cyclicalShift(input, 1, 32);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testCyclicalShiftTwoShifts()
+    {
+        BigInteger input = new BigInteger("2147483648");
+        BigInteger expectedOutput = new BigInteger("2");
+        BigInteger actualOutput = cipher.cyclicalShift(input, 2, 32);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
+    public void testCyclicalShiftThreeShifts()
+    {
+        BigInteger input = new BigInteger("2147483648");
+        BigInteger expectedOutput = new BigInteger("4");
+        BigInteger actualOutput = cipher.cyclicalShift(input, 3, 32);
+        assertEquals(expectedOutput, actualOutput);
+    }
+    
+    @Test
     public void testPc2WithBigInteger()
     {
         BigInteger key56Bit = new BigInteger("63500464316796702");
