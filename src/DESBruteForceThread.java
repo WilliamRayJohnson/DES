@@ -1,4 +1,5 @@
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -32,11 +33,16 @@ public class DESBruteForceThread implements Runnable {
     @Override
     public void run() {
     	BigInteger currentKey = keySpaceBegin;
+    	String currentKeyString;
     	int[] cipherTextOfCurrentKey = new int[8];
+    	
         while(!keyFound.get() && !keySpaceEnd.equals(currentKey)) {
-            cipher.setKey(currentKey.toString(2));
+        	currentKeyString = currentKey.toString(2);
+        	while (currentKeyString.length() < 64)
+                currentKeyString = "0" + currentKeyString;
+            cipher.setKey(currentKeyString);
             cipherTextOfCurrentKey = cipher.encrypt(plainText);
-            if(cipherTextOfCurrentKey == cipherText)
+            if(Arrays.equals(cipherTextOfCurrentKey, cipherText))
             	keyFound.set(true);
             currentKey = currentKey.add(BigInteger.ONE);
         }
