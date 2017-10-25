@@ -1,6 +1,10 @@
+package Cipher.BruteForce;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import Cipher.DES;
 
 /**
  * A thread that will run DES over a given key space.

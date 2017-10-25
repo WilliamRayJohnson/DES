@@ -1,3 +1,5 @@
+package Cipher;
+
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
