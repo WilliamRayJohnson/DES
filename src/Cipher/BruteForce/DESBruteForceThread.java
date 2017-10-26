@@ -20,9 +20,10 @@ public class DESBruteForceThread implements Runnable {
     /**
      * Constructs a DES force thread for a given key space
      * @param keySpaceBegin the beginning of the key space, the first key to check
-     * @param keySpaceEnd the end of the key space, the last key to check
+     * @param keySpaceEnd the boundary of the key space, the key before this one is the last to be checked
      * @param cipherText the cipher text trying to be cracked
      * @param plainText the corresponding plain text
+     * @param keyFound thread safe boolean that will signal the other threads if key is found
      */
     public DESBruteForceThread(BigInteger keySpaceBegin, BigInteger keySpaceEnd, int[] cipherText, 
     		int[] plainText, AtomicBoolean keyFound) {
