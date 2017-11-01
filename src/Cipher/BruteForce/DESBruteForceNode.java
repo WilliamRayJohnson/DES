@@ -34,9 +34,10 @@ public class DESBruteForceNode {
         final AtomicReference<String> correctKey = new AtomicReference<String>();
         final AtomicInteger threadsCompleted = new AtomicInteger();
         final ExecutorService DESThreads = Executors.newFixedThreadPool(threadCount);
+        BigInteger[][] threadRanges = divideUpKeys(keySpaceBegin, keySpaceEnd);
         
         for(int thread = 0; thread < threadCount; thread++)
-        	DESThreads.submit(new DESBruteForceThread(null, null, 
+        	DESThreads.submit(new DESBruteForceThread(threadRanges[thread][0], threadRanges[thread][1], 
         			cipherText, plainText, keyFound, correctKey, threadsCompleted)); 
         
         final ScheduledExecutorService node = Executors.newSingleThreadScheduledExecutor();
@@ -52,6 +53,25 @@ public class DESBruteForceNode {
         	foundKey = correctKey.get();
         
         return keyFound.get();
+    }
+    
+    public BigInteger[][] divideUpKeys(BigInteger keySpaceBegin, BigInteger keySpaceEnd) {
+        BigInteger range = keySpaceEnd.subtract(keySpaceBegin).divide(BigInteger.valueOf(threadCount));
+        BigInteger[][] dividedUpKeys = new BigInteger[threadCount][2];
+        BigInteger threadBeginKey = keySpaceBegin;
+        BigInteger threadEndKey = keySpaceBegin.add(range.add(BigInteger.ONE));
+        for(int thread = 0; thread < threadCount; thread++){
+            dividedUpKeys[thread][0] = threadBeginKey;
+            if(thread == threadCount - 1){
+                dividedUpKeys[thread][1] = keySpaceEnd.add(BigInteger.ONE);
+            }
+            else{
+                dividedUpKeys[thread][1] = threadEndKey;
+            }
+            threadBeginKey = threadEndKey;
+            threadEndKey = threadEndKey.add(range);
+        }
+        return dividedUpKeys;
     }
     
     public String getFoundKey() {
