@@ -6,15 +6,28 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class Server {
+
+	final private static BigInteger keySpaceSize = BigInteger.valueOf(100000);
+	
+	// Highest key that has been sent to a client
+	private static BigInteger highestKey = BigInteger.ZERO;
+	
+	// List containing lower bounds of keyspaces that are being used
+	private static ArrayList<BigInteger> runningKeySpaces = new ArrayList<BigInteger>();
+	
+	// List containing lower bounds of keyspaces which were abandoned by a client 
+	private static ArrayList<BigInteger> incompleteKeySpaces = new ArrayList<BigInteger>();
 	
 	// Indicates whether the key has been found
 	private static boolean found = false;
-
+	
     /**
      * Run in an infinite loop listening on port 9898. When a connection is 
      * requested, it spawns a new thread to do the servicing and immediately 
@@ -56,6 +69,7 @@ public class Server {
          * and sending back the an appropriate response.
          */
         public void run() {
+            String clientKeySpace = "";
             try {
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
@@ -64,7 +78,11 @@ public class Server {
                 // Send a welcome message to the client.
                 out.println("You are client #" + clientNumber + ".");
                 out.println("Send a line with only a period to quit\n");
-
+                
+                // Send plaintext and ciphertext to client
+                out.println("plain123");
+                out.println("cipher456");
+                
                 // Get messages from the client, line by line
                 while (true) {
                     String input = in.readLine();
@@ -74,9 +92,15 @@ public class Server {
                     
                     // Client requesting their keyspace
                     if (input.equals("key")) {
-                    	out.println("keyspace" + clientNumber);
-                    	//out.println(getKeySpace(clientNumber));
-                    	//TODO: implement getKeySpace
+	                   	clientKeySpace = getKeySpace();
+	                   	out.println(clientKeySpace);
+                    }
+                    
+                    // Client indicating they've finished their keyspace
+                    if (input.equals("complete")) {
+                    	runningKeySpaces.remove(runningKeySpaces.indexOf(new BigInteger(clientKeySpace.split(",")[0])));
+                    	clientKeySpace = "";
+                    	out.println("completed keyspace.");
                     }
                     
                     // Client says they found the key
@@ -91,7 +115,7 @@ public class Server {
                     }
                 }
             } catch (IOException e) {
-                log("Error handling client #" + clientNumber + ": " + e);
+                log("Error handling client #" + clientNumber + "x: " + e);
             } finally {
                 try {
                     socket.close();
@@ -99,11 +123,51 @@ public class Server {
                     log("Couldn't close a socket");
                 }
                 log("Connection with client #" + clientNumber + " closed");
+                
+                // Mark client's keyspace as incomplete
+                if (clientKeySpace.length() > 0) {
+                	markIncomplete(clientKeySpace);
+                }
             }
+        }
+        
+        /**
+         * Mark a keyspace as incomplete if a client disconnects unexpectedly
+         * @param clientKeySpace keyspace formatted firstkey,lastkey that the
+         * client presumably did not complete
+         */
+        private void markIncomplete(String clientKeySpace) {
+        	BigInteger firstKey = new BigInteger(clientKeySpace.split(",")[0]);
+        	runningKeySpaces.remove(runningKeySpaces.indexOf(firstKey));
+        	incompleteKeySpaces.add(firstKey);
+        }
+        
+        /**
+         * If there are any incomplete keyspaces, return the first one.
+         * Otherwise, return the next highest keyspace.
+         * @return next keyspace to run as string formatted firstkey,lastkey
+         */
+        private String getKeySpace() {
+        	String firstKey;
+        	String lastKey;
+        	if (incompleteKeySpaces.isEmpty()) {
+        		runningKeySpaces.add(highestKey);
+        		firstKey = highestKey.toString();
+        		highestKey = highestKey.add(keySpaceSize);
+				lastKey = highestKey.toString();
+        	} else {
+        		runningKeySpaces.add(incompleteKeySpaces.get(0));
+        		firstKey = incompleteKeySpaces.get(0).toString();
+        		lastKey = incompleteKeySpaces.get(0).add(keySpaceSize).toString();
+        		incompleteKeySpaces.remove(0);
+        	}
+        	log("Assigning keyspace: " + firstKey);
+        	return firstKey + "," + lastKey;
         }
 
         private void log(String message) {
             System.out.println(message);
         }
+    
     }
 }
