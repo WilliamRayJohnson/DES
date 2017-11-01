@@ -18,6 +18,12 @@ public class DESBruteForceNode {
 	private int[] plainText;
 	private String foundKey;
 
+	/**
+	 * A node that will brute force DES over a given key space using a given number of threads
+	 * @param cipherText the cipher text 
+	 * @param plainText the plain text
+	 * @param threadCount the number of threads to use
+	 */
 	public DESBruteForceNode(int[] cipherText, int[] plainText, int threadCount) {
 		this.cipherText = cipherText;
 		this.plainText = plainText;
@@ -55,6 +61,12 @@ public class DESBruteForceNode {
         return keyFound.get();
     }
     
+    /**
+     * Divides the key spaced based on the number of threads
+     * @param keySpaceBegin the first key to be used in the space
+     * @param keySpaceEnd the last key to be used in the space
+     * @return the range of keys for each thread as [begin:end)
+     */
     public BigInteger[][] divideUpKeys(BigInteger keySpaceBegin, BigInteger keySpaceEnd) {
         BigInteger range = keySpaceEnd.subtract(keySpaceBegin).divide(BigInteger.valueOf(threadCount));
         BigInteger[][] dividedUpKeys = new BigInteger[threadCount][2];
@@ -78,6 +90,11 @@ public class DESBruteForceNode {
     	return foundKey;
     }
     
+    /**
+     * Assigns key space variables
+     * @param keySpaceBegin the first key to use in the brute force
+     * @param keySpaceEnd the last key to use in the brute force
+     */
     public void setKeyspace(BigInteger keySpaceBegin, BigInteger keySpaceEnd) {
     	this.keySpaceBegin = keySpaceBegin;
     	this.keySpaceEnd = keySpaceEnd;

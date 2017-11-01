@@ -26,6 +26,8 @@ public class DESBruteForceThread implements Runnable {
      * @param cipherText the cipher text trying to be cracked
      * @param plainText the corresponding plain text
      * @param keyFound thread safe boolean that will signal the other threads if key is found
+     * @param correctKey the variable to assign the correct key if it is found
+     * @param threadsCompleted variable thread will increment once thread has finished executing
      */
     public DESBruteForceThread(BigInteger keySpaceBegin, BigInteger keySpaceEnd, int[] cipherText, 
     		int[] plainText, AtomicBoolean keyFound, AtomicReference<String> correctKey,
