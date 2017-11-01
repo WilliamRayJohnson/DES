@@ -1,4 +1,4 @@
-package sockettest;
+package Cipher.sockettest;
 
 import java.io.BufferedReader;
 import java.io.IOException;

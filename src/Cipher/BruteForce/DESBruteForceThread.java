@@ -2,7 +2,7 @@ package Cipher.BruteForce;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.*;
 
 import Cipher.DES;
 
@@ -16,6 +16,8 @@ public class DESBruteForceThread implements Runnable {
     private int[] plainText;
     private DES cipher;
     private AtomicBoolean keyFound;
+    AtomicReference<String> correctKey;
+	AtomicInteger threadsCompleted;
 
     /**
      * Constructs a DES force thread for a given key space
@@ -26,12 +28,15 @@ public class DESBruteForceThread implements Runnable {
      * @param keyFound thread safe boolean that will signal the other threads if key is found
      */
     public DESBruteForceThread(BigInteger keySpaceBegin, BigInteger keySpaceEnd, int[] cipherText, 
-    		int[] plainText, AtomicBoolean keyFound) {
+    		int[] plainText, AtomicBoolean keyFound, AtomicReference<String> correctKey,
+    		AtomicInteger threadsCompleted) {
         this.keySpaceBegin = keySpaceBegin;
         this.keySpaceEnd = keySpaceEnd;
         this.cipherText = cipherText;
         this.plainText = plainText;
         this.keyFound = keyFound;
+        this.correctKey = correctKey;
+        this.threadsCompleted = threadsCompleted;
         this.cipher = new DES(16);
     }
 
@@ -51,5 +56,6 @@ public class DESBruteForceThread implements Runnable {
             	keyFound.set(true);
             currentKey = currentKey.add(BigInteger.ONE);
         }
+        threadsCompleted.incrementAndGet();
     }
 }

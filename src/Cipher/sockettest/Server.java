@@ -1,4 +1,4 @@
-package sockettest;
+package Cipher.sockettest;
 
 // used for socket reference: http://cs.lmu.edu/~ray/notes/javanetexamples
 

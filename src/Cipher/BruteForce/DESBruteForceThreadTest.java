@@ -16,7 +16,8 @@ public class DESBruteForceThreadTest {
 	@Test
 	public void testBruteForceKey() {
 		final AtomicBoolean keyFound = new AtomicBoolean(false);
-		Thread DESThread = new Thread(new DESBruteForceThread(beginKeySpace, endKeySpace, cipherText, plainText, keyFound));
+		Thread DESThread = new Thread(new DESBruteForceThread(beginKeySpace, 
+				endKeySpace, cipherText, plainText, keyFound, null, null));
 		DESThread.run();
 		assertTrue(keyFound.get());
 	}
