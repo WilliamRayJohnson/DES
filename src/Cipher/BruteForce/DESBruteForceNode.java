@@ -18,10 +18,7 @@ public class DESBruteForceNode {
 	private int[] plainText;
 	private String foundKey;
 
-	public DESBruteForceNode(BigInteger keySpaceBegin, BigInteger keySpaceEnd, int[] cipherText, 
-    		int[] plainText, int threadCount) {
-		this.keySpaceBegin = keySpaceBegin;
-		this.keySpaceEnd = keySpaceEnd;
+	public DESBruteForceNode(int[] cipherText, int[] plainText, int threadCount) {
 		this.cipherText = cipherText;
 		this.plainText = plainText;
 		this.threadCount = threadCount;
@@ -59,5 +56,10 @@ public class DESBruteForceNode {
     
     public String getFoundKey() {
     	return foundKey;
+    }
+    
+    public void setKeyspace(BigInteger keySpaceBegin, BigInteger keySpaceEnd) {
+    	this.keySpaceBegin = keySpaceBegin;
+    	this.keySpaceEnd = keySpaceEnd;
     }
 }

@@ -4,10 +4,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.net.Socket;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import Cipher.BruteForce.DESBruteForceNode;
 
 
 public class Client {
@@ -24,24 +27,39 @@ public class Client {
      * running the algorithm.
      */
     private void start() {
-    	String keyspace = getResponse("key");
-    	System.out.println("Keyspace: " + keyspace);
-    	
-    	// TODO here: run algorithm in 5 threads over keyspace
-    	// if key is found: getResponse("found");
-    	
-    	
-    	// Ask server if key has been found
-    	// Run every x minutes
-    	String found = getResponse("check");
-    	if (found.equals("true")) {
-    		// Stop everything because key is found
-    		getResponse(".");
-    		System.exit(0);
-    	} else {
-    		System.out.println("Key has not been found yet. "
-    				+ "Response: " + found);
-    	}
+        DESBruteForceNode node = new DESBruteForceNode(null, null, 5); //TODO Add cipher and plain text
+        boolean keyFound = false;
+        BigInteger keySpaceBegin;
+        BigInteger keySpaceEnd;
+
+        while (!keyFound) {
+            String keyspace = getResponse("key");
+            System.out.println("Keyspace: " + keyspace);
+
+            String[] beginAndEnd = keyspace.split(",");
+            keySpaceBegin = new BigInteger(beginAndEnd[0]);
+            keySpaceEnd = new BigInteger(beginAndEnd[1]);
+            node.setKeyspace(keySpaceBegin, keySpaceEnd);
+
+            keyFound = node.run();
+            // if key is found: getResponse("found");
+            if (keyFound) {
+                getResponse("found");
+                //TODO also send found key via node.getFoundKey()
+            }
+
+            // Ask server if key has been found
+            // Run every x minutes
+            String found = getResponse("check");
+            if (found.equals("true")) {
+                // Stop everything because key is found
+                // TODO Get key from server and print
+                getResponse(".");
+                System.exit(0);
+            } else {
+                System.out.println("Key has not been found yet. " + "Response: " + found);
+            }
+        }
     }
     
     /**
