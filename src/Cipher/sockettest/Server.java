@@ -14,8 +14,7 @@ import java.util.ArrayList;
 
 public class Server {
 
-
-    final private static BigInteger keySpaceSize = BigInteger.valueOf(100000);
+    final private static BigInteger keySpaceSize = BigInteger.valueOf(1000000000);
 
     // Highest key that has been sent to a client
     private static BigInteger highestKey = BigInteger.ZERO;
@@ -30,7 +29,6 @@ public class Server {
     private static boolean found = false;
 
     // Value of key if it is found
-    //TODO make sure null works fine
     private static BigInteger key = null;
 
     /**

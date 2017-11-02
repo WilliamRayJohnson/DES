@@ -27,6 +27,7 @@ public class Client {
      * running the algorithm.
      */
     private void start(String plaintext, String ciphertext) {
+        //TODO Plain text and cipher text must fill in nulls
         DESBruteForceNode node = new DESBruteForceNode(null, null, 5);
         boolean keyFound = false;
         BigInteger keySpaceBegin;
