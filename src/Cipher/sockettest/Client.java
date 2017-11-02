@@ -27,8 +27,15 @@ public class Client {
      * running the algorithm.
      */
     private void start(String plaintext, String ciphertext) {
-        //TODO Plain text and cipher text must fill in nulls
-        DESBruteForceNode node = new DESBruteForceNode(null, null, 5);
+        byte[] plainTextBytes = plaintext.getBytes();
+        byte[] cipherTextBytes = ciphertext.getBytes();
+        int[] plainTextInt = new int[8];
+        int[] cipherTextInt = new int[8];
+        for (int aByte = 0; aByte < 8; aByte++){
+            plainTextInt[aByte] = Byte.toUnsignedInt(plainTextBytes[aByte]);
+            cipherTextInt[aByte] = Byte.toUnsignedInt(cipherTextBytes[aByte]);
+        }
+        DESBruteForceNode node = new DESBruteForceNode(cipherTextInt, plainTextInt, 5);
         boolean keyFound = false;
         BigInteger keySpaceBegin;
         BigInteger keySpaceEnd;
