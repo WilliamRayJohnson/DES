@@ -3,7 +3,7 @@ package Cipher.BruteForce;
 import static org.junit.Assert.*;
 
 import java.math.BigInteger;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.*;
 
 import org.junit.*;
 
@@ -16,9 +16,12 @@ public class DESBruteForceThreadTest {
 	@Test
 	public void testBruteForceKey() {
 		final AtomicBoolean keyFound = new AtomicBoolean(false);
+		final AtomicReference<String> foundKey = new AtomicReference<String>();
+		final AtomicInteger threadsCompleted = new AtomicInteger();
 		Thread DESThread = new Thread(new DESBruteForceThread(beginKeySpace, 
-				endKeySpace, cipherText, plainText, keyFound, null, null));
+				endKeySpace, cipherText, plainText, keyFound, foundKey, threadsCompleted));
 		DESThread.run();
 		assertTrue(keyFound.get());
+		assertEquals(1, threadsCompleted.get());
 	}
 }

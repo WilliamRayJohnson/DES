@@ -54,8 +54,10 @@ public class DESBruteForceThread implements Runnable {
                 currentKeyString = "0" + currentKeyString;
             cipher.setKey(currentKeyString);
             cipherTextOfCurrentKey = cipher.encrypt(plainText);
-            if(Arrays.equals(cipherTextOfCurrentKey, cipherText))
+            if(Arrays.equals(cipherTextOfCurrentKey, cipherText)) {
             	keyFound.set(true);
+            	correctKey.set(currentKeyString); 
+            }
             currentKey = currentKey.add(BigInteger.ONE);
         }
         threadsCompleted.incrementAndGet();
