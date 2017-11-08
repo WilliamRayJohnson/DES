@@ -110,7 +110,7 @@ public class Client {
    public void connectToServer() throws IOException {
 
        // Get the server address from a dialog box.
-       String serverAddress = "172.31.21.215";
+       String serverAddress = "13.58.224.85";
 
        // Make connection and initialize streams
        Socket socket = new Socket(serverAddress, 9898);
