@@ -26,12 +26,11 @@ public class Client {
     */
    private void start(String plaintext, String ciphertext) {
        byte[] plainTextBytes = plaintext.getBytes();
-       byte[] cipherTextBytes = ciphertext.getBytes();
        int[] plainTextInt = new int[8];
        int[] cipherTextInt = new int[8];
        for (int aByte = 0; aByte < 8; aByte++){
            plainTextInt[aByte] = Byte.toUnsignedInt(plainTextBytes[aByte]);
-           cipherTextInt[aByte] = Byte.toUnsignedInt(cipherTextBytes[aByte]);
+           cipherTextInt[aByte] = Integer.parseInt(ciphertext.substring(aByte * 2, (aByte * 2) + 2), 16);
        }
        DESBruteForceNode node = new DESBruteForceNode(cipherTextInt, plainTextInt, 5);
        boolean keyFound = false;

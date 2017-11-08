@@ -83,8 +83,8 @@ public class Server {
                out.println("Send a line with only a period to quit\n");
 
                // Send plaintext and ciphertext to client
-               out.println("plain123");
-               out.println("cipher456");
+               out.println("councill");
+               out.println("130504865423CAAE");
 
                // Get messages from the client, line by line
                while (true) {

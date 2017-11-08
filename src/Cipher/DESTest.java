@@ -30,6 +30,25 @@ public class DESTest
     }
     
     @Test
+    public void testCipherTextToInt(){
+        String cipherText = "130504865423CAAE";
+        int[] expectedInts = {19, 5, 4, 134, 84, 35, 202, 174};
+        byte[] CTbytes = cipherText.getBytes();
+        int[] actualInts = new int[8];
+        for (int aByte = 0; aByte < 8; aByte++){
+            actualInts[aByte] = Integer.parseInt(cipherText.substring(aByte * 2, (aByte * 2) + 2), 16);
+        }
+        assertEquals(expectedInts[0], actualInts[0]);
+        assertEquals(expectedInts[1], actualInts[1]);
+        assertEquals(expectedInts[2], actualInts[2]);
+        assertEquals(expectedInts[3], actualInts[3]);
+        assertEquals(expectedInts[4], actualInts[4]);
+        assertEquals(expectedInts[5], actualInts[5]);
+        assertEquals(expectedInts[6], actualInts[6]);
+        assertEquals(expectedInts[7], actualInts[7]);
+    }
+    
+    @Test
     public void testEncryptDecrypt()
     {
         DES localCipher = new DES(16, "src/key.txt");

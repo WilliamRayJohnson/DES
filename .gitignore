@@ -3,3 +3,4 @@
 .project
 *.txt
 *.py
+.settings
