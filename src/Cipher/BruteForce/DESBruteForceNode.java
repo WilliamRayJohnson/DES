@@ -39,21 +39,11 @@ public class DESBruteForceNode {
         final AtomicBoolean keyFound = new AtomicBoolean(false);
         final AtomicReference<String> correctKey = new AtomicReference<String>();
         final AtomicInteger threadsCompleted = new AtomicInteger();
-        final ExecutorService DESThreads = Executors.newFixedThreadPool(threadCount);
         BigInteger[][] threadRanges = divideUpKeys(keySpaceBegin, keySpaceEnd);
         
         for(int thread = 0; thread < threadCount; thread++)
-        	DESThreads.submit(new DESBruteForceThread(threadRanges[thread][0], threadRanges[thread][1], 
-        			cipherText, plainText, keyFound, correctKey, threadsCompleted)); 
-        
-        final ScheduledExecutorService node = Executors.newSingleThreadScheduledExecutor();
-        node.schedule(new Runnable() {
-        	public void run() {
-        		while(!keyFound.get() && threadsCompleted.intValue() < threadCount) {}
-        		DESThreads.shutdown();
-        		node.shutdown(); 
-        	}
-        }, 500, TimeUnit.MILLISECONDS);
+        	new Thread(new DESBruteForceThread(threadRanges[thread][0], threadRanges[thread][1], 
+        			cipherText, plainText, keyFound, correctKey, threadsCompleted)).run(); 
         
         if(keyFound.get())
         	foundKey = correctKey.get();
