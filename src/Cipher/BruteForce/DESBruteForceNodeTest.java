@@ -7,6 +7,10 @@ import java.math.BigInteger;
 import org.junit.Test;
 
 public class DESBruteForceNodeTest {
+    private int[] plainText = {68, 69, 83, 105, 110, 103, 10, 88};
+    private int[] cipherText = {248, 225, 225, 247, 58, 210, 44, 197};
+    BigInteger beginKeySpace = new BigInteger("8387236824869660444");
+    BigInteger endKeySpace = new BigInteger("8387236824869660452");
 
 	@Test
 	public void testDivideUpKeys() {
@@ -22,5 +26,17 @@ public class DESBruteForceNodeTest {
         assertEquals(expectedRanges[2][0], actualRanges[2][0]);
         assertEquals(expectedRanges[2][1], actualRanges[2][1]);
 	}
+	
+	@Test
+	public void testFindKey(){
+	    DESBruteForceNode node = new DESBruteForceNode(cipherText, plainText, 2);
+	    node.setKeyspace(beginKeySpace, endKeySpace);
+	    String expectedKey = "0111010001100101011100110111010001101001011011100110011100100000";
+	    boolean keyFound = node.run();
+	    
+	    assertEquals(expectedKey, node.getFoundKey()); 
+	    assertTrue(keyFound);
+	}
+	
 
 }
