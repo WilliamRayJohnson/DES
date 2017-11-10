@@ -463,11 +463,12 @@ public class DES {
 	public char[] passThroughSBox(int[] arr)
 	{
 		char[] bef = new char[48];
+		int index = arr.length - 1;
 		for (int i = 0; i < arr.length; i++)
 		{
-			char[] numAsByte = Integer.toBinaryString(arr[i]).toCharArray();
+			char[] numAsByte = Integer.toBinaryString(arr[index]).toCharArray();
 			int numBits = numAsByte.length - 1;
-			for (int j = 7; j > 8 - numAsByte.length; j--)
+			for (int j = 7; j > 7 - numAsByte.length; j--)
 			{
 				bef[i * 8 + j] = numAsByte[numBits];
 				numBits--;
@@ -476,7 +477,7 @@ public class DES {
 			{
 				bef[i * 8 + j] = '0';
 			}
-
+			index--;
 		}
 		char[] aft = new char[32];
 		for (int i = 0; i < 8; i++)
@@ -549,6 +550,7 @@ public class DES {
 				aft[i * 4 + 3] = '0';
 			}
 		}
+		System.out.println(aft);
 
 		return aft;
 	}
