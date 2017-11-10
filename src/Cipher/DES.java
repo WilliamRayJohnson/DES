@@ -81,8 +81,8 @@ public class DES {
 		// String temp = "";
 		int[] table = { 13, 16, 10, 23, 0, 4, 2, 27, 14, 5, 20, 9, 22, 18, 11, 3, 25, 7, 15, 6, 26, 19, 12, 1, 40, 51, 30, 36, 46, 54, 29, 39, 50, 44, 32, 47, 43, 48, 38, 55, 33, 52, 45, 41, 49, 35, 28, 31 };
 		char[] tmp = new char[56];
-		for (int x = 0; x < table.length; x++)
-			tmp[x] = pc2.charAt(table[x]);
+		for (int i = 0; i < table.length; i++)
+			tmp[i] = pc2.charAt(table[i]);
 		return new String(tmp);
 	}
 
@@ -173,12 +173,10 @@ public class DES {
 		String bitsToInvert = leftHalfString + rightHalfString;
 		String processedTextString = InvIP(bitsToInvert);
 		int[] processedText = new int[8];
-
 		for (int k = 0; k < processedText.length; k++)
 		{
 			processedText[processedText.length - 1 - k] = Integer.parseInt(processedTextString.substring(k * 8, k * 8 + 8), 2);
 		}
-
 		return processedText;
 	}
 
@@ -248,87 +246,17 @@ public class DES {
 	public int[][] generateKeys()
 	{
 		// PC-1
-		char[][] tableL = new char[4][7];
-		char[][] tableR = new char[4][7];
+		// int[][] tableL = new int[4][7];
+		// int[][] tableR = new int[4][7];
 		int i = 0;
-		tableL[1][0] = this.key.charAt(i++);
-		tableL[2][1] = this.key.charAt(i++);
-		tableL[3][2] = this.key.charAt(i++);
-		tableR[3][6] = this.key.charAt(i++);
-		tableR[3][2] = this.key.charAt(i++);
-		tableR[2][1] = this.key.charAt(i++);
-		tableR[1][0] = this.key.charAt(i++);
-		tableL[0][6] = this.key.charAt(i++);
-		tableL[2][0] = this.key.charAt(i++);
-		tableL[3][1] = this.key.charAt(i++);
-		tableR[3][5] = this.key.charAt(i++);
-		tableR[3][1] = this.key.charAt(i++);
-		tableR[2][0] = this.key.charAt(i++);
-		tableR[0][6] = this.key.charAt(i++);
-		tableL[0][5] = this.key.charAt(i++);
-		tableL[1][6] = this.key.charAt(i++);
-		tableL[3][0] = this.key.charAt(i++);
-		tableR[3][4] = this.key.charAt(i++);
-		tableR[3][0] = this.key.charAt(i++);
-		tableR[1][6] = this.key.charAt(i++);
-		tableR[0][5] = this.key.charAt(i++);
-		tableL[0][4] = this.key.charAt(i++);
-		tableL[1][5] = this.key.charAt(i++);
-		tableL[2][6] = this.key.charAt(i++);
-		tableR[3][3] = this.key.charAt(i++);
-		tableR[2][6] = this.key.charAt(i++);
-		tableR[1][5] = this.key.charAt(i++);
-		tableR[0][4] = this.key.charAt(i++);
-		tableL[0][3] = this.key.charAt(i++);
-		tableL[1][4] = this.key.charAt(i++);
-		tableL[2][5] = this.key.charAt(i++);
-		tableL[3][6] = this.key.charAt(i++);
-		tableR[2][5] = this.key.charAt(i++);
-		tableR[1][4] = this.key.charAt(i++);
-		tableR[0][3] = this.key.charAt(i++);
-		tableL[0][2] = this.key.charAt(i++);
-		tableL[1][3] = this.key.charAt(i++);
-		tableL[2][4] = this.key.charAt(i++);
-		tableL[3][5] = this.key.charAt(i++);
-		tableR[2][4] = this.key.charAt(i++);
-		tableR[1][3] = this.key.charAt(i++);
-		tableR[0][2] = this.key.charAt(i++);
-		tableL[0][1] = this.key.charAt(i++);
-		tableL[1][2] = this.key.charAt(i++);
-		tableL[2][3] = this.key.charAt(i++);
-		tableL[3][4] = this.key.charAt(i++);
-		tableR[2][3] = this.key.charAt(i++);
-		tableR[1][2] = this.key.charAt(i++);
-		tableR[0][1] = this.key.charAt(i++);
-		tableL[0][0] = this.key.charAt(i++);
-		tableL[1][1] = this.key.charAt(i++);
-		tableL[2][2] = this.key.charAt(i++);
-		tableL[3][3] = this.key.charAt(i++);
-		tableR[2][2] = this.key.charAt(i++);
-		tableR[1][1] = this.key.charAt(i++);
-		tableR[0][0] = this.key.charAt(i++);
-
-		// Building Left and Right strings
-		i = 0;
-		char[] res1 = new char[28];
-		char[] res2 = new char[28];
-		for (int j = 0; j < 4; j++)
-		{
-			for (int k = 0; k < 7; k++)
-			{
-				res1[j * 7 + k] = tableL[j][k];
-				res2[j * 7 + k] = tableR[j][k];
-				// result += tableL[j][k];
-				// result2 += tableR[j][k];
-			}
-		}
+		String pc1Result = new String(pc1(key));
+		String left = pc1Result.substring(0, 28);
+		String right = pc1Result.substring(28, 56);
 
 		// PC-2 leftShifting for 16 rounds
-		String result = new String(res1);
-		String result2 = new String(res2);
 		String[] leftShifts = new String[16];
 		i = 0;
-		leftShifts[i++] = leftShift(1, result);
+		leftShifts[i++] = leftShift(1, left);
 		leftShifts[i++] = leftShift(1, leftShifts[i - 2]);
 		leftShifts[i++] = leftShift(2, leftShifts[i - 2]);
 		leftShifts[i++] = leftShift(2, leftShifts[i - 2]);
@@ -347,7 +275,7 @@ public class DES {
 
 		String[] rightShifts = new String[16];
 		i = 0;
-		rightShifts[i++] = leftShift(1, result2);
+		rightShifts[i++] = leftShift(1, right);
 		rightShifts[i++] = leftShift(1, rightShifts[i - 2]);
 		rightShifts[i++] = leftShift(2, rightShifts[i - 2]);
 		rightShifts[i++] = leftShift(2, rightShifts[i - 2]);
@@ -365,6 +293,7 @@ public class DES {
 		rightShifts[i++] = leftShift(1, rightShifts[i - 2]);
 
 		String[] pc2String = new String[16];
+
 		int[][] keys = new int[16][6];
 		for (int j = 0; j < 16; j++)
 		{
@@ -374,7 +303,6 @@ public class DES {
 				keys[j][5 - k] = Integer.parseInt(pc2String[j].substring(k * 8, k * 8 + 8), 2);
 			}
 		}
-
 		return keys;
 	}
 
@@ -414,7 +342,7 @@ public class DES {
 
 		for (int i = 0; i < 64; i++)
 		{
-			chb[i] = binary.charAt(64 - invIPTable[i]);
+			chb[i] = binary.charAt(invIPTable[i] - 1);
 		}
 
 		return new String(chb);
@@ -554,6 +482,14 @@ public class DES {
 		return aft;
 	}
 
+	public char[] pc1(String key)
+	{
+		char[] k = key.toCharArray();
+		char[] result = { k[49], k[42], k[35], k[28], k[21], k[14], k[7], k[0], k[50], k[43], k[36], k[29], k[22], k[15], k[8], k[1], k[51], k[44], k[37], k[30], k[23], k[16], k[9], k[2], k[52], k[45], k[38], k[31], k[55], k[48], k[41], k[34], k[27],
+				k[20], k[13], k[6], k[54], k[47], k[40], k[33], k[26], k[19], k[12], k[5], k[53], k[46], k[39], k[32], k[25], k[18], k[11], k[4], k[24], k[17], k[10], k[3] };
+		return result;
+	}
+
 	/**
 	 * Converts the S box output to a certain permutation
 	 *
@@ -601,6 +537,17 @@ public class DES {
 
 	public void setKey(String key)
 	{
+		if (key.length() < 56)
+		{
+			int padLength = 56 - key.length();
+			char[] paddingAsCharArr = new char[padLength];
+			for (int i = 0; i < padLength; i++)
+			{
+				paddingAsCharArr[i] = '0';
+			}
+			String padding = new String(paddingAsCharArr);
+			key = padding + key;
+		}
 		this.key = key;
 	}
 
