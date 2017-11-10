@@ -43,14 +43,14 @@ public class DESBruteForceNodeTest {
         int[] plainText = { 68, 69, 83, 105, 110, 103, 10, 88 };
         int[] cipherText = { 248, 225, 225, 247, 58, 210, 44, 197 };
         BigInteger beginKeySpace = new BigInteger("0");
-        BigInteger endKeySpace = new BigInteger("10000000");
+        BigInteger endKeySpace = new BigInteger("1000000");
         DESBruteForceNode node = new DESBruteForceNode(cipherText, plainText, 5);
         node.setKeyspace(beginKeySpace, endKeySpace);
         long startTime = System.currentTimeMillis();
         node.run();
         long endTime = System.currentTimeMillis();
         long time = endTime - startTime;
-        System.out.println("It took: " + time);
+        System.out.printf("It took: %f seconds", time * 0.001);
     }
 
 }
