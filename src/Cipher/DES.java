@@ -550,7 +550,6 @@ public class DES {
 				aft[i * 4 + 3] = '0';
 			}
 		}
-		System.out.println(aft);
 
 		return aft;
 	}
